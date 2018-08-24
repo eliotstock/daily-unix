@@ -1,0 +1,25 @@
+{
+  "name": "daily_unix",
+  "version": "1.0.0",
+  "description": "Daily Unix",
+  "scripts": {
+    "lint": "./node_modules/.bin/tslint -p tslint.json",
+    "build": "./node_modules/.bin/tsc",
+    "run": "./node_modules/.bin/ts-node src/index.ts"
+  },
+  "main": "lib/index.js",
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^2.5.3",
+    "ts-node": "*",
+    "@types/node": "*",
+    "@types/csv-stringify": "*"
+  },
+  "dependencies": {
+    "child_process": "*",
+    "csv-stringify": "*",
+    "moment": "*"
+  },
+  "private": true
+}
