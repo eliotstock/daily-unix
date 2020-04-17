@@ -15,9 +15,6 @@ _BIN_DIRS = ['/bin', '/sbin', '/usr/bin', '/usr/sbin']
 
 _OUT_DIR = '../out'
 
-total_man_pages = 0
-total_tldr_pages = 0
-
 def main() -> int:
     """Script entry point."""
 
@@ -35,6 +32,9 @@ def main() -> int:
 
     os.makedirs(_OUT_DIR + '/ls')
     os.makedirs(_OUT_DIR + '/man')
+
+    total_man_pages = 0
+    total_tldr_pages = 0
 
     for d in _BIN_DIRS:
         os.makedirs(f'{_OUT_DIR}/ls{d}')
@@ -55,11 +55,33 @@ def main() -> int:
             if len(b) == 0:
                 pass
 
+            b = b.strip()
+
             # Produce man pages
-            man_out = open(f'{_OUT_DIR}/man{d}/{b}.txt')
+            man_out = open(f'{_OUT_DIR}/man{d}/{b}.txt', 'w')
+            # TODO: Take stderr here and write it to _LOG.debug().
             subprocess.call(['man', b], stdout=man_out)
             dir_man_pages += 1
-            dir_tldr_pages += 1
+            total_man_pages += 1
+
+            # Try looking for the tldr page first under common, and only if
+            # that fails under linux.
+            try:
+                shutil.copy(f'../../tldr/pages/common/{b}.md', f'{_OUT_DIR}/tldr/{d}/{b}.md')
+                dir_tldr_pages += 1
+                total_tldr_pages += 1
+            except Exception:
+                try:
+                    shutil.copy(f'../../tldr/pages/linux/{b}.md', f'{_OUT_DIR}/tldr/{d}/{b}.md')
+                    dir_tldr_pages += 1
+                    total_tldr_pages += 1
+                except Exception:
+                    _LOG.debug(f'  No tldr page: {d}/{b}')
+        _LOG.info(f'  {dir_man_pages} man pages')
+        _LOG.info(f'  {dir_tldr_pages} tldr pages')
+
+    _LOG.info(f'Total: {total_man_pages} man pages')
+    _LOG.info(f'Total: {total_tldr_pages} tldr pages')
 
 if __name__ == '__main__':
     sys.exit(main())
