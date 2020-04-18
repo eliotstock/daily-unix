@@ -22,7 +22,8 @@ def main() -> int:
     _LOG.info(f'Checking for required tools')
 
     if not os.path.exists('../../tldr'):
-        _LOG.error('Clone https://github.com/tldr-pages/tldr.git into directory tldr alongside this repo')
+        _LOG.error('Clone https://github.com/tldr-pages/tldr.git into'
+                + ' directory tldr alongside this repo')
         exit
 
     _LOG.info('Removing output from last time')
@@ -31,36 +32,47 @@ def main() -> int:
     except Exception:
         pass
 
-    os.makedirs(_OUT_DIR + '/ls')
-    os.makedirs(_OUT_DIR + '/man')
+    os.makedirs(_OUT_DIR)
 
     total_man_pages = 0
     total_tldr_pages = 0
 
     for d in _BIN_DIRS:
-        os.makedirs(f'{_OUT_DIR}/ls{d}')
-        os.makedirs(f'{_OUT_DIR}/man{d}')
-        os.makedirs(f'{_OUT_DIR}/tldr{d}')
-
-        ls_out = open(f'{_OUT_DIR}/ls{d}/ls.txt', 'w')
-        subprocess.call(['ls', '-1', d], stdout=ls_out)
+        bins = subprocess.check_output(['ls', '-1', d]).splitlines()
 
         _LOG.info(f'Saving pages for {d}')
-
-        bin_list_lines = open(f'{_OUT_DIR}/ls{d}/ls.txt').readlines()
 
         dir_man_pages = 0
         dir_tldr_pages = 0
 
-        for b in bin_list_lines:
+        for b in bins:
             if len(b) == 0:
                 pass
 
-            b = b.strip()
+            b = b.strip().decode()
+
+            try:
+                os.makedirs(f'{_OUT_DIR}/{b}')
+            except FileExistsError:
+                # If a binary exists in both /bin and /sbin, we already have
+                # what we need and can skip it this time.
+                continue
+
+            # Produce whatis strings
+            try:
+                whatis = subprocess.check_output(['whatis', b],
+                        stderr=subprocess.DEVNULL).strip().decode()
+                whatis_out = open(f'{_OUT_DIR}/{b}/whatis.txt', 'w')
+                if whatis:
+                    whatis_out.write(whatis)
+                    whatis_out.close()
+            except Exception:
+                pass
 
             # Produce man pages
-            man_out = open(f'{_OUT_DIR}/man{d}/{b}.txt', 'w')
-            man_process = subprocess.Popen(['man', b], stdout=man_out, stderr=subprocess.PIPE)
+            man_out = open(f'{_OUT_DIR}/{b}/man.txt', 'w')
+            man_process = subprocess.Popen(['man', b], stdout=man_out,
+                    stderr=subprocess.PIPE)
             error = man_process.stderr.read()
             if error:
                 _LOG.debug(error.decode().strip())
@@ -71,12 +83,14 @@ def main() -> int:
             # Try looking for the tldr page first under common, and only if
             # that fails under linux.
             try:
-                shutil.copy(f'../../tldr/pages/common/{b}.md', f'{_OUT_DIR}/tldr/{d}/{b}.md')
+                shutil.copy(f'../../tldr/pages/common/{b}.md',
+                        f'{_OUT_DIR}/{b}/tldr.md')
                 dir_tldr_pages += 1
                 total_tldr_pages += 1
             except Exception:
                 try:
-                    shutil.copy(f'../../tldr/pages/linux/{b}.md', f'{_OUT_DIR}/tldr/{d}/{b}.md')
+                    shutil.copy(f'../../tldr/pages/linux/{b}.md',
+                            f'{_OUT_DIR}/{b}/tldr.md')
                     dir_tldr_pages += 1
                     total_tldr_pages += 1
                 except Exception:
