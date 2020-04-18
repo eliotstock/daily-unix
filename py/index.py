@@ -8,10 +8,11 @@ import subprocess
 import sys
 
 _LOG = logging.getLogger(__name__)
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
-# Directories that contain binaries
-_BIN_DIRS = ['/bin', '/sbin', '/usr/bin', '/usr/sbin']
+# Directories that contain binaries. On Ubuntu 20.04, /bin and /sbin are just
+# symlinks to the same dirs under /usr.
+_BIN_DIRS = ['/usr/bin', '/usr/sbin']
 
 _OUT_DIR = '../out'
 
@@ -59,8 +60,11 @@ def main() -> int:
 
             # Produce man pages
             man_out = open(f'{_OUT_DIR}/man{d}/{b}.txt', 'w')
-            # TODO: Take stderr here and write it to _LOG.debug().
-            subprocess.call(['man', b], stdout=man_out)
+            man_process = subprocess.Popen(['man', b], stdout=man_out, stderr=subprocess.PIPE)
+            error = man_process.stderr.read()
+            if error:
+                _LOG.debug(error.decode().strip())
+
             dir_man_pages += 1
             total_man_pages += 1
 
