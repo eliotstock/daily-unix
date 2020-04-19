@@ -3,6 +3,7 @@
 
 import logging
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -58,10 +59,20 @@ def main() -> int:
                 # what we need and can skip it this time.
                 continue
 
-            # Produce whatis strings
+            # Produce whatis strings.
             try:
                 whatis = subprocess.check_output(['whatis', b],
                         stderr=subprocess.DEVNULL).strip().decode()
+
+                # These string typically look like this. Let's strip off the
+                # left hand side.
+                # xmodmap (1)          - utility for modifying keymaps and
+                #   pointer button mappings in X
+                # Replace "Any characters from start of line up to any amount
+                # of whitespace, then a -, then some more whitespace" with
+                # nothing.
+                whatis = re.sub(r'^.*\s\-\s', '', whatis)
+
                 whatis_out = open(f'{_OUT_DIR}/{b}/whatis.txt', 'w')
                 if whatis:
                     whatis_out.write(whatis)
