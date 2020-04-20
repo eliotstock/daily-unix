@@ -7,6 +7,9 @@ import re
 import shutil
 import subprocess
 import sys
+import zipfile
+
+from os.path import basename
 
 _LOG = logging.getLogger(__name__)
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -26,6 +29,8 @@ def main() -> int:
         _LOG.error('Clone https://github.com/tldr-pages/tldr.git into'
                 + ' directory tldr alongside this repo')
         exit
+
+    # input('Hit Ctrl-C now to stop re-run.')
 
     _LOG.info('Removing output from last time')
     try:
@@ -111,6 +116,17 @@ def main() -> int:
 
     _LOG.info(f'Total: {total_man_pages} man pages')
     _LOG.info(f'Total: {total_tldr_pages} tldr pages')
+
+    # Zip everything up into a file that can go into the mobile apps
+    zip_file = zipfile.ZipFile('content.zip', 'w', zipfile.ZIP_DEFLATED)
+
+    for root, dir, files in os.walk(_OUT_DIR):
+        for file in files:
+            path_in_fs = os.path.join(root, file)
+            path_in_zip = os.path.join(basename(root), file)
+            _LOG.info(f'path_in_fs: {path_in_fs}, path_in_zip: {path_in_zip}')
+            zip_file.write(path_in_fs, path_in_zip)
+    zip_file.close()
 
 if __name__ == '__main__':
     sys.exit(main())
