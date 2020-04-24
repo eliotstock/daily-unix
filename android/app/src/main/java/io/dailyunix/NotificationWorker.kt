@@ -3,7 +3,6 @@ package io.dailyunix
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import android.util.Log
 import androidx.work.*
 import androidx.concurrent.futures.CallbackToFutureAdapter;
@@ -21,48 +20,44 @@ fun reschedule(appContext: Context) {
     val dueDate = Calendar.getInstance()
     val currentDate = Calendar.getInstance()
 
-    // Set Execution around 08:45:00
+    // Execute at around 08:45.
     dueDate.set(Calendar.HOUR_OF_DAY, 8)
     dueDate.set(Calendar.MINUTE, 45)
     dueDate.set(Calendar.SECOND, 0)
 
+    // If it's now 08:45, we mean 08:45 tomorrow.
     if (dueDate.before(currentDate)) {
         dueDate.add(Calendar.HOUR_OF_DAY, 24)
     }
 
     val timeDiff = dueDate.timeInMillis - currentDate.timeInMillis
 
+    // This is a one-time request. We'll need to reschedule on every run.
     val dailyWorkRequest = OneTimeWorkRequest.Builder(NotificationWorker::class.java)
         .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
         .addTag(NotificationWorker::class.java.name)
         .build()
 
     WorkManager.getInstance(appContext).enqueue(dailyWorkRequest)
-
-//    val workRequest = PeriodicWorkRequest.Builder(NotificationWorker::class.java, 24,
-//        TimeUnit.HOURS).build()
-//    WorkManager.getInstance(appContext).enqueueUniquePeriodicWork(
-//            NotificationWorker::class.java.name, ExistingPeriodicWorkPolicy.REPLACE, workRequest)
 }
 
 // TODO (P1): Call this exactly once in the lifetime of the application, such as when the welcome
 //  activity is shown.
 fun createNotificationChannel(appContext: Context) {
-    // Create the NotificationChannel, but only on API 26+ because
-    // the NotificationChannel class is new and not in the support library
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        // TODO (P2): Use appContext.getString()
-        val name = "Daily Unix"
-        val descriptionText = "Command of the day"
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(channelId, name, importance).apply {
-            description = descriptionText
-        }
+    // Note that if we ever want to support N-, we should only execute this code for O+.
+    // Notification channels were new in O.
 
-        val notificationManager: NotificationManager =
-            appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
+    // TODO (P2): Use appContext.getString()
+    val name = "Daily Unix"
+    val descriptionText = "Command of the day"
+    val importance = NotificationManager.IMPORTANCE_DEFAULT
+    val channel = NotificationChannel(channelId, name, importance).apply {
+        description = descriptionText
     }
+
+    val notificationManager: NotificationManager =
+        appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    notificationManager.createNotificationChannel(channel)
 }
 
 fun showNotification(appContext: Context, command: String, whatis: String) {
@@ -92,6 +87,7 @@ class NotificationWorker(appContext: Context, workerParams: WorkerParameters)
         showNotification(applicationContext, "ar", "Create a tape archive file")
 
         return CallbackToFutureAdapter.getFuture {
+            reschedule(applicationContext)
             it.set(ListenableWorker.Result.success())
         }
     }
