@@ -1,118 +1,65 @@
 package io.dailyunix
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.BufferedInputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.lang.IllegalStateException
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
 
 class MainActivity : AppCompatActivity() {
 
     private val tag = MainActivity::class.java.name
 
-    private val contentDirName = "content"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.v(tag, "onCreate()")
+
         setContentView(R.layout.activity_main)
 
-        extractContent()
-
-        // TODO (P0): Get this from the Intent that started us. Pass it in from the local
-        //  notification.
-        val command = "ar"
-        val commandDir = File(contentDir(), command)
-
-        val whatIs = File(commandDir, "whatis.txt").readText()
-        val tldr = File(commandDir, "tldr.md").readText()
-        val man = File(commandDir, "man.txt").readText()
-
-        commandName.setText(command)
-
-        // TODO (P0): Add the whatis string to the command TextView, underneath the command name.
-
-        page.setText(tldr)
-
-        // TODO (P0): Wire a listener up to the tabs. Change the contents of the page on taps.
-
         // Schedule local notifications for every morning.
+        // TODO (P0): Do this only following a (re)install. Doing it here is doubling up on the
+        //  rescheduling in NotificationWorker.
         reschedule(applicationContext)
 
         // createNotificationChannel(applicationContext)
+
+        // TODO (P0): Do this only following a (re)install.
+        extractContent(applicationContext)
     }
 
-    private fun contentDir(): File {
-        return File(applicationContext.filesDir, contentDirName)
+    override fun onStart() {
+        super.onStart()
+
+        Log.v(tag, "onStart()")
+
+        val model: Model = getModel(applicationContext)
+
+        // Now is NOT the time to advance to the next random command to show. The notification
+        // worker already did that before showing the notification.
+        val command = model.commandOftheDay
+
+        commandName.text = command?.name
+        page.text = command?.tldr
     }
 
-    /**
-     * Extract res/raw/content.zip into [app data]/files/content/.
-     */
-    private fun extractContent() {
-        val contentResourceId = applicationContext.resources.getIdentifier("content",
-            "raw", packageName)
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
 
-        val contentZip: InputStream =
-            applicationContext.resources.openRawResource(contentResourceId)
+        Log.v(tag, "onNewIntent()")
 
-        val zipInputStream = ZipInputStream(BufferedInputStream(contentZip))
-
-        var ze: ZipEntry
-
-        val contentDir = contentDir()
-
-        if (contentDir.exists()) {
-            // TODO (P1): Only extract this if the date on the file is more recent than the app
-            //  data, or on the first run after each update of the app.
-            return
-        }
-
-        Log.i(tag, "Writing content to app data:")
-
-        // Create the content directory in app data if it doesn't exist already.
-        try {
-            contentDir.mkdir()
-        }
-        catch (e: Exception) {
-            Log.e(tag, e.message)
-        }
-
-        while (true)
-        {
-            try {
-                ze = zipInputStream.nextEntry
-            }
-            catch (e: IllegalStateException) {
-                // We're done.
-                break
-            }
-
-            val file: File = File(contentDir, ze.name)
-
-            try {
-                file.parentFile.mkdir()
-            }
-            catch (e: Exception) {
-                Log.e(tag, e.message)
-            }
-
-            val fileOutputStream: FileOutputStream = FileOutputStream(file)
-
-            Log.i(tag, "$ze.name")
-
-            zipInputStream.copyTo(fileOutputStream)
-
-            fileOutputStream.close();
-            zipInputStream.closeEntry();
-        }
-
-        zipInputStream.close();
+//        val command = intent?.getStringExtra("command")
+//        val whatIs = intent?.getStringExtra("whatIs")
+//        val tldr = intent?.getStringExtra("tldr")
+//        val man = intent?.getStringExtra("man")
+//
+//        commandName.text = command
+//
+//        // TODO (P0): Add the whatis string to the command TextView, underneath the command name.
+//
+//        page.text = tldr
+//
+//        // TODO (P0): Wire a listener up to the tabs. Change the contents of the page on taps.
     }
 
 }
