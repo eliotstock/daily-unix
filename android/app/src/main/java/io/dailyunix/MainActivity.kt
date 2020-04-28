@@ -16,16 +16,6 @@ class MainActivity : AppCompatActivity() {
         Log.v(tag, "onCreate()")
 
         setContentView(R.layout.activity_main)
-
-        // Schedule local notifications for every morning.
-        // TODO (P0): Do this only following a (re)install. Doing it here is doubling up on the
-        //  rescheduling in NotificationWorker.
-        reschedule(applicationContext)
-
-        // createNotificationChannel(applicationContext)
-
-        // TODO (P0): Do this only following a (re)install.
-        extractContent(applicationContext)
     }
 
     override fun onStart() {
@@ -41,25 +31,15 @@ class MainActivity : AppCompatActivity() {
 
         commandName.text = command?.name
         page.text = command?.tldr
+
+        // TODO (P0): Add the whatis string to the command TextView, underneath the command name.
+        // TODO (P0): Wire a listener up to the tabs. Change the contents of the page on taps.
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
         Log.v(tag, "onNewIntent()")
-
-//        val command = intent?.getStringExtra("command")
-//        val whatIs = intent?.getStringExtra("whatIs")
-//        val tldr = intent?.getStringExtra("tldr")
-//        val man = intent?.getStringExtra("man")
-//
-//        commandName.text = command
-//
-//        // TODO (P0): Add the whatis string to the command TextView, underneath the command name.
-//
-//        page.text = tldr
-//
-//        // TODO (P0): Wire a listener up to the tabs. Change the contents of the page on taps.
     }
 
 }

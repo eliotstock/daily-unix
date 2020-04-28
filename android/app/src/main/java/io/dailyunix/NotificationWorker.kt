@@ -18,8 +18,6 @@ private val tag = NotificationWorker::class.java.name
 
 private const val channelId = "daily"
 
-// private var requestCodeSerial = 0
-
 // Package level function
 fun reschedule(appContext: Context) {
     // Thanks: https://medium.com/androiddevelopers/workmanager-periodicity-ff35185ff006
@@ -52,8 +50,6 @@ fun reschedule(appContext: Context) {
     WorkManager.getInstance(appContext).enqueue(dailyWorkRequest)
 }
 
-// TODO (P1): Call this exactly once in the lifetime of the application, such as when the welcome
-//  activity is shown.
 fun createNotificationChannel(appContext: Context) {
     // Note that if we ever want to support N-, we should only execute this code for O+.
     // Notification channels were new in O.
@@ -72,14 +68,6 @@ fun createNotificationChannel(appContext: Context) {
 }
 
 fun showNotification(appContext: Context, title: String, text: String, intent: Intent) {
-    // Sending a different request code every time works around some madness in Android where the
-    // intent never reaches the activity if it's already running. See:
-    // https://stackoverflow.com/a/16458878/973364
-    // requestCodeSerial += 1
-
-//    val pendingIntent: PendingIntent = PendingIntent.getActivity(appContext, requestCodeSerial,
-//        intent, PendingIntent.FLAG_UPDATE_CURRENT)
-
     val pendingIntent: PendingIntent = PendingIntent.getActivity(appContext, 0,
         intent, 0)
 
@@ -108,22 +96,11 @@ class NotificationWorker(appContext: Context, workerParams: WorkerParameters)
 
         // Now is the time to advance to the next random command to show.
         model.nextCommand(applicationContext)
+        model.save(applicationContext)
 
         // Make sure we don't call Model.nextCommand() again before the user taps on the
         // notification, otherwise the activity will show a different command to the notification.
         val command = model.commandOftheDay
-
-//        // If the activity is already running, it will only be brought to the foreground and will
-//        // NOT get the intent with the extras we need, unless we use these flags. See:
-//        // https://stackoverflow.com/a/11563909/973364
-//        val intent = Intent(applicationContext, MainActivity::class.java).apply {
-//            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-//        }
-//
-//        intent.putExtra("command", command.name)
-//        intent.putExtra("whatIs", command.whatIs)
-//        intent.putExtra("tldr", command.tldr)
-//        intent.putExtra("man", command.man)
 
         val intent = Intent(applicationContext, MainActivity::class.java)
 

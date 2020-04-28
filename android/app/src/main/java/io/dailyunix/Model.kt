@@ -15,10 +15,13 @@ private const val modelFileName = "model.json"
 private const val contentDirName = "content"
 
 class Model {
+    var versionCode: Int = 0
     var commandOftheDay: Command? = null
     private var commandOfTheDayIndex: Int = 0
 
     fun save(context: Context) {
+        versionCode = BuildConfig.VERSION_CODE
+
         val json = Gson().toJson(this)
 
         Log.d(tag, "Model: $json")
@@ -32,7 +35,7 @@ class Model {
     fun nextCommand(context: Context) {
         val allCommands = getAllCommands(context)
 
-        // TODO (P2): Check for out by one error. It this inclusive of allCommands.size?
+        // TODO (P2): Check for out by one error. Is this inclusive of allCommands.size?
         // TODO (P1): first remove commands that have already been seen by the user.
         commandOfTheDayIndex = Random.nextInt(0, allCommands.size)
 
@@ -114,9 +117,9 @@ fun extractContent(context: Context) {
     val contentDir = contentDir(context)
 
     if (contentDir.exists()) {
-        // TODO (P1): Only extract this if the date on the file is more recent than the app
-        //  data, or on the first run after each update of the app.
-        return
+        // TODO (P2): We should really delete everything and replace it here. Simply overwriting
+        //  makes it impossible to remove a directory in a subsequent release.
+        Log.i(tag, "Overwriting existing content")
     }
 
     Log.i(tag, "Writing content to app data:")
