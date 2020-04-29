@@ -1,5 +1,6 @@
 # Copyright 2020 Eliot Stock
-"""Unowned files. Find files on this host that are not owned by any package."""
+"""Create a static set of man pages, tldr pages and whatis strings for all the
+   binaries ("commands") on this host."""
 
 import logging
 import os

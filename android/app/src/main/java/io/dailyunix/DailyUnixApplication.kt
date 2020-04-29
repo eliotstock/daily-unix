@@ -23,6 +23,8 @@ class DailyUnixApplication : Application() {
             createNotificationChannel(applicationContext)
 
             reschedule(applicationContext)
+
+            model.save(applicationContext)
         }
     }
 }

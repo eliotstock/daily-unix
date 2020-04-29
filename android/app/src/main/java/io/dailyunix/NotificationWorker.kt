@@ -25,8 +25,8 @@ fun reschedule(appContext: Context) {
     val currentDate = Calendar.getInstance()
 
     // Execute at around 08:45.
-    dueDate.set(Calendar.HOUR_OF_DAY, 8)
-    dueDate.set(Calendar.MINUTE, 45)
+    dueDate.set(Calendar.HOUR_OF_DAY, 21)
+    dueDate.set(Calendar.MINUTE, 0)
     dueDate.set(Calendar.SECOND, 0)
 
     // If it's now after 08:45, we mean 08:45 tomorrow.
