@@ -25,8 +25,8 @@ fun reschedule(appContext: Context) {
     val currentDate = Calendar.getInstance()
 
     // Execute at around 08:45.
-    dueDate.set(Calendar.HOUR_OF_DAY, 21)
-    dueDate.set(Calendar.MINUTE, 0)
+    dueDate.set(Calendar.HOUR_OF_DAY, 8)
+    dueDate.set(Calendar.MINUTE, 45)
     dueDate.set(Calendar.SECOND, 0)
 
     // If it's now after 08:45, we mean 08:45 tomorrow.
@@ -54,9 +54,8 @@ fun createNotificationChannel(appContext: Context) {
     // Note that if we ever want to support N-, we should only execute this code for O+.
     // Notification channels were new in O.
 
-    // TODO (P2): Use appContext.getString()
-    val name = "Daily Unix"
-    val descriptionText = "Command of the day"
+    val name = appContext.getString(R.string.app_name)
+    val descriptionText = appContext.getString(R.string.channel_name)
     val importance = NotificationManager.IMPORTANCE_DEFAULT
     val channel = NotificationChannel(channelId, name, importance).apply {
         description = descriptionText
@@ -93,6 +92,10 @@ class NotificationWorker(appContext: Context, workerParams: WorkerParameters)
         Log.i(tag, "Popping notification for command of the day.")
 
         val model: Model = getModel(applicationContext)
+
+        // For debugging purposes only. Remove when stable.
+        val timestamp = Date().toInstant().toString()
+        model.notificationHistory.add(timestamp)
 
         // Now is the time to advance to the next random command to show.
         model.nextCommand(applicationContext)

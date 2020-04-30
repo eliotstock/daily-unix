@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- To edit, use https://material.io/resources/color -->
+    <color name="primaryColor">#1a237e</color>
+    <color name="primaryLightColor">#534bae</color>
+    <color name="primaryDarkColor">#000051</color>
+    <color name="primaryTextColor">#ffffff</color>
+    <color name="black">#000</color>
+    <color name="lightGrey">#CCC</color>
+    <color name="midGrey">#666</color>
+</resources>

@@ -19,6 +19,9 @@ class Model {
     var commandOftheDay: Command? = null
     private var commandOfTheDayIndex: Int = 0
 
+    // For debug purposes only. Remove when stable.
+    var notificationHistory: MutableList<String> = ArrayList()
+
     fun save(context: Context) {
         versionCode = BuildConfig.VERSION_CODE
 
@@ -36,7 +39,7 @@ class Model {
         val allCommands = getAllCommands(context)
 
         // TODO (P2): Check for out by one error. Is this inclusive of allCommands.size?
-        // TODO (P1): first remove commands that have already been seen by the user.
+        // TODO (P1): First remove commands that have already been seen by the user.
         commandOfTheDayIndex = Random.nextInt(0, allCommands.size)
 
         val randomCommandName = allCommands[commandOfTheDayIndex]
@@ -117,9 +120,14 @@ fun extractContent(context: Context) {
     val contentDir = contentDir(context)
 
     if (contentDir.exists()) {
-        // TODO (P2): We should really delete everything and replace it here. Simply overwriting
-        //  makes it impossible to remove a directory in a subsequent release.
-        Log.i(tag, "Overwriting existing content")
+        Log.i(tag, "Deleting existing content and overwriting")
+
+        try {
+            contentDir.delete()
+        }
+        catch (e: Exception) {
+            Log.e(tag, e.message)
+        }
     }
 
     Log.i(tag, "Writing content to app data:")

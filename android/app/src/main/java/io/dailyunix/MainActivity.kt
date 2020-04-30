@@ -30,10 +30,9 @@ class MainActivity : AppCompatActivity() {
         val command = model.commandOftheDay
 
         commandName.text = command?.name
-        page.text = command?.tldr
-
-        // TODO (P0): Add the whatis string to the command TextView, underneath the command name.
-        // TODO (P0): Wire a listener up to the tabs. Change the contents of the page on taps.
+        whatis.text = command?.whatIs
+        tldr.text = command?.tldr
+        man.text = command?.man
     }
 
     override fun onNewIntent(intent: Intent?) {
