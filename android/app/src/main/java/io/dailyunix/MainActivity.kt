@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         commandName.text = command?.name
         whatis.text = command?.whatIs
+        providerPackage.text = command?.providerPackage
         tldr.text = command?.tldr
         man.text = command?.man
     }

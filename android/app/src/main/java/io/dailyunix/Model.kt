@@ -47,17 +47,25 @@ class Model {
         Log.d(tag, "Picking $randomCommandName, command $commandOfTheDayIndex of " +
                 "${allCommands.size}")
 
-        commandOftheDay = Command(randomCommandName, null, null, null)
+        commandOftheDay = Command(randomCommandName, null, null, null,
+                null)
 
         val commandDir = File(contentDir(context), commandOftheDay!!.name)
 
-        // Both the whatis and the man file are expected to be there, but let's handle any that are
-        // missing.
+        // The whatis, package and the man file are all expected to be there, but let's handle any
+        // that are missing anyway.
         try {
             commandOftheDay!!.whatIs = File(commandDir, "whatis.txt").readText()
         }
         catch (e: FileNotFoundException) {
-            Log.d(tag, "${commandOftheDay!!.name} has no whatis file")
+            Log.w(tag, "${commandOftheDay!!.name} has no whatis file")
+        }
+
+        try {
+            commandOftheDay!!.providerPackage = File(commandDir, "package.txt").readText()
+        }
+        catch (e: FileNotFoundException) {
+            Log.w(tag, "${commandOftheDay!!.name} has no package file")
         }
 
         try {
