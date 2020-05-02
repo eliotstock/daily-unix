@@ -70,7 +70,7 @@ def main() -> int:
                 whatis = subprocess.check_output(['whatis', b],
                         stderr=subprocess.DEVNULL).strip().decode()
 
-                # These string typically look like this. Let's strip off the
+                # These strings typically look like this. Let's strip off the
                 # left hand side.
                 # xmodmap (1)          - utility for modifying keymaps and
                 #   pointer button mappings in X
@@ -83,6 +83,23 @@ def main() -> int:
                 if whatis:
                     whatis_out.write(whatis)
                     whatis_out.close()
+            except Exception:
+                pass
+
+            # Note the owning package of the binary.
+            try:
+                package = subprocess.check_output(['dpkg', '-S', b],
+                    stderr=subprocess.DEVNULL).strip().decode()
+
+                # Take just the first word of the first line, before ":".
+                package = package.split(':')[0]
+
+                _LOG.info(f'  Owned by {package}')
+
+                package_out = open(f'{_OUT_DIR}/{b}/package.txt', 'w')
+                if package:
+                    package_out.write(package)
+                    package_out.close()
             except Exception:
                 pass
 
