@@ -94,8 +94,6 @@ def main() -> int:
                 # Take just the first word of the first line, before ":".
                 package = package.split(':')[0]
 
-                _LOG.info(f'  Owned by {package}')
-
                 package_out = open(f'{_OUT_DIR}/{b}/package.txt', 'w')
                 if package:
                     package_out.write(package)
