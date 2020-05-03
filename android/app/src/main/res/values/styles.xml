@@ -10,4 +10,11 @@
         <item name="android:textColor">@color/lightGrey</item>
     </style>
 
+    <style name="textView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:padding">15dp</item>
+    </style>
+
 </resources>

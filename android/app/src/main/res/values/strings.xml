@@ -3,4 +3,5 @@
     <string name="channel_name">Command of the day</string>
     <string name="tldr">tldr</string>
     <string name="man">man</string>
+    <string name="provided">Provided by package: %s</string>
 </resources>

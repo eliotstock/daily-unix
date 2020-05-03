@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -30,10 +31,47 @@ class MainActivity : AppCompatActivity() {
         val command = model.commandOftheDay
 
         commandName.text = command?.name
-        whatis.text = command?.whatIs
-        providerPackage.text = command?.providerPackage
-        tldr.text = command?.tldr
-        man.text = command?.man
+
+        // Remove any unpopulated TextView instances from the layout.
+        if (command?.whatIs != null) {
+            whatis.text = command.whatIs
+            whatis.visibility = View.VISIBLE
+        }
+        else {
+            whatis.visibility = View.GONE
+        }
+
+        if (command?.providerPackage.isNullOrBlank()) {
+            providerPackage.visibility = View.GONE
+        }
+        else {
+            providerPackage.text = getString(R.string.provided, command?.providerPackage)
+            providerPackage.visibility = View.VISIBLE
+        }
+
+        if (command?.tldr.isNullOrBlank()) {
+            tldr.visibility = View.GONE
+        }
+        else {
+            tldr.text = command?.tldr
+            tldr.visibility = View.VISIBLE
+        }
+
+        if (command?.man.isNullOrBlank()) {
+            man.visibility = View.GONE
+        }
+        else {
+            man.text = command?.man
+            man.visibility = View.VISIBLE
+        }
+
+        // TODO (P2): For now, simply tapping on the notification constitutes "completing" a
+        //  command. Later, add a "Done" button to the activity.
+        command?.name?.let { model.completedCommands.add(it) }
+
+        model.save(applicationContext)
+
+        completion.text = model.completionMessage(applicationContext)
     }
 
     override fun onNewIntent(intent: Intent?) {

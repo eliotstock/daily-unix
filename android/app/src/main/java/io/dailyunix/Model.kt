@@ -19,6 +19,8 @@ class Model {
     var commandOftheDay: Command? = null
     private var commandOfTheDayIndex: Int = 0
 
+    var completedCommands: MutableSet<String> = HashSet()
+
     // For debug purposes only. Remove when stable.
     var notificationHistory: MutableList<String> = ArrayList()
 
@@ -36,16 +38,16 @@ class Model {
     // the app before commandOftheDay is populated. extractContent() needs to have been called
     // beforehand.
     fun nextCommand(context: Context) {
-        val allCommands = getAllCommands(context)
+        val commandsNotYetCompleted = getCommandNames(context, completedCommands)
 
-        // TODO (P2): Check for out by one error. Is this inclusive of allCommands.size?
-        // TODO (P1): First remove commands that have already been seen by the user.
-        commandOfTheDayIndex = Random.nextInt(0, allCommands.size)
+        // nextInt() is *exclusive* of the second parameter, ie. it will never return it. This is
+        // good because the size of an array is one higher than the index of the last element.
+        commandOfTheDayIndex = Random.nextInt(0, commandsNotYetCompleted.size)
 
-        val randomCommandName = allCommands[commandOfTheDayIndex]
+        val randomCommandName = commandsNotYetCompleted[commandOfTheDayIndex]
 
         Log.d(tag, "Picking $randomCommandName, command $commandOfTheDayIndex of " +
-                "${allCommands.size}")
+                "${commandsNotYetCompleted.size}")
 
         commandOftheDay = Command(randomCommandName, null, null, null,
                 null)
@@ -82,6 +84,18 @@ class Model {
             Log.d(tag, "${commandOftheDay!!.name} has no man file")
         }
     }
+
+    fun completionMessage(context: Context): String {
+        val commandsNotYetCompleted = getCommandNames(context, completedCommands)
+        val totalCommands = completedCommands.size + commandsNotYetCompleted.size
+        val percent: Float = completedCommands.size.toFloat() / totalCommands.toFloat()
+
+        val m = "Completed ${completedCommands.size} of ${totalCommands} (%${percent.toInt()})"
+
+        Log.i(tag, m)
+
+        return m
+    }
 }
 
 fun getModel(context: Context): Model {
@@ -91,9 +105,7 @@ fun getModel(context: Context): Model {
         return Model()
     }
 
-    val model = Gson().fromJson(jsonString, Model::class.java)
-
-    return model
+    return Gson().fromJson(jsonString, Model::class.java)
 }
 
 private fun modelFile(context: Context): File {
@@ -134,7 +146,7 @@ fun extractContent(context: Context) {
             contentDir.delete()
         }
         catch (e: Exception) {
-            Log.e(tag, e.message)
+            Log.e(tag, e.message ?: "Can't delete: {contentDir}")
         }
     }
 
@@ -145,7 +157,7 @@ fun extractContent(context: Context) {
         contentDir.mkdir()
     }
     catch (e: Exception) {
-        Log.e(tag, e.message)
+        Log.e(tag, e.message ?: "can't mkdir: {contentDir}")
     }
 
     while (true)
@@ -158,33 +170,35 @@ fun extractContent(context: Context) {
             break
         }
 
-        val file: File = File(contentDir, ze.name)
+        val file = File(contentDir, ze.name)
 
         try {
-            file.parentFile.mkdir()
+            file.parentFile?.mkdir()
         }
         catch (e: Exception) {
-            Log.e(tag, e.message)
+            Log.e(tag, e.message ?: "Can't mkdir: {file.parentFile}")
         }
 
-        val fileOutputStream: FileOutputStream = FileOutputStream(file)
+        val fileOutputStream = FileOutputStream(file)
 
         Log.i(tag, "$ze.name")
 
         zipInputStream.copyTo(fileOutputStream)
 
-        fileOutputStream.close();
-        zipInputStream.closeEntry();
+        fileOutputStream.close()
+        zipInputStream.closeEntry()
     }
 
-    zipInputStream.close();
+    zipInputStream.close()
 }
 
-private fun getAllCommands(context: Context): List<String> {
+private fun getCommandNames(context: Context, excluding: Set<String>): List<String> {
     val allCommands: MutableList<String> = ArrayList()
 
     contentDir(context).listFiles(FileFilter { it.isDirectory })?.forEach {
-        allCommands.add(it.name)
+        if (!excluding.contains(it.name)) {
+            allCommands.add(it.name)
+        }
     }
 
     return allCommands

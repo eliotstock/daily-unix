@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.work.*
-import androidx.concurrent.futures.CallbackToFutureAdapter;
+import androidx.concurrent.futures.CallbackToFutureAdapter
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.common.util.concurrent.ListenableFuture
@@ -25,8 +25,8 @@ fun reschedule(appContext: Context) {
     val currentDate = Calendar.getInstance()
 
     // Execute at around 08:45.
-    dueDate.set(Calendar.HOUR_OF_DAY, 6)
-    dueDate.set(Calendar.MINUTE, 47)
+    dueDate.set(Calendar.HOUR_OF_DAY, 8)
+    dueDate.set(Calendar.MINUTE, 45)
     dueDate.set(Calendar.SECOND, 0)
 
     // If it's now after 08:45, we mean 08:45 tomorrow.
@@ -108,16 +108,26 @@ class NotificationWorker(appContext: Context, workerParams: WorkerParameters)
         val intent = Intent(applicationContext, MainActivity::class.java)
 
         if (command != null) {
-            // TODO (P3): For a command with no whatis string, use only the first line of the tldr.
-            //  And for a command without either, use the first non boilerplate line from the man
-            //  page.
-            showNotification(applicationContext, command.name,
-                command.whatIs ?: "Tap for more info", intent)
+            var text: String? = command.whatIs
+
+            // For a command with no whatis string, use only the first line of the tldr.
+            if (text == null && command.tldr != null) {
+                text = command.tldr?.split("\n")?.get(0)
+            }
+            // And for a command without either, use the first line from the man page.
+            else if (command.man != null) {
+                text = command.man?.split("\n")?.get(0)
+            }
+            else {
+                text = "Tap for more info"
+            }
+
+            showNotification(applicationContext, command.name, text!!, intent)
         }
 
         return CallbackToFutureAdapter.getFuture {
             reschedule(applicationContext)
-            it.set(ListenableWorker.Result.success())
+            it.set(Result.success())
         }
     }
 }
