@@ -41,6 +41,10 @@ def main() -> int:
 
     os.makedirs(_OUT_DIR)
 
+    coverage_csv_out = open(f'{_OUT_DIR}/coverage.csv', 'w')
+    coverage_csv_out.write('command,whatis,package,man,tldr\n')
+    coverage_csv_row = ''
+
     total_man_pages = 0
     total_tldr_pages = 0
 
@@ -65,6 +69,8 @@ def main() -> int:
                 # what we need and can skip it this time.
                 continue
 
+            coverage_csv_row += f'{b},'
+
             # Produce whatis strings.
             try:
                 whatis = subprocess.check_output(['whatis', b],
@@ -83,8 +89,9 @@ def main() -> int:
                 if whatis:
                     whatis_out.write(whatis)
                     whatis_out.close()
+                    coverage_csv_row += 'y,'
             except Exception:
-                pass
+                coverage_csv_row += ','
 
             # Note the owning package of the binary.
             try:
@@ -98,14 +105,16 @@ def main() -> int:
                 if package:
                     package_out.write(package)
                     package_out.close()
+                    coverage_csv_row += 'y,'
             except Exception:
-                pass
+                coverage_csv_row += ','
 
             # Produce man pages
             man_out = open(f'{_OUT_DIR}/{b}/man.txt', 'w')
             man_process = subprocess.Popen(['man', b], stdout=man_out,
                     stderr=subprocess.PIPE)
             error = man_process.stderr.read()
+            coverage_csv_row += 'y,'
             if error:
                 _LOG.debug(error.decode().strip())
 
@@ -119,6 +128,7 @@ def main() -> int:
                         f'{_OUT_DIR}/{b}/tldr.md')
                 dir_tldr_pages += 1
                 total_tldr_pages += 1
+                coverage_csv_row += 'y\n'
             except Exception:
                 try:
                     shutil.copy(f'../../tldr/pages/linux/{b}.md',
@@ -127,11 +137,16 @@ def main() -> int:
                     total_tldr_pages += 1
                 except Exception:
                     _LOG.debug(f'  No tldr page: {d}/{b}')
+                coverage_csv_row += '\n'
         _LOG.info(f'  {dir_man_pages} man pages')
         _LOG.info(f'  {dir_tldr_pages} tldr pages')
 
+        coverage_csv_out.write(coverage_csv_row)
+
     _LOG.info(f'Total: {total_man_pages} man pages')
     _LOG.info(f'Total: {total_tldr_pages} tldr pages')
+
+    coverage_csv_out.close()
 
     # Zip everything up into a file that can go into the mobile apps
     zip_file = zipfile.ZipFile('content.zip', 'w', zipfile.ZIP_DEFLATED)
@@ -140,7 +155,7 @@ def main() -> int:
         for file in files:
             path_in_fs = os.path.join(root, file)
             path_in_zip = os.path.join(basename(root), file)
-            _LOG.info(f'path_in_fs: {path_in_fs}, path_in_zip: {path_in_zip}')
+            # _LOG.info(f'path_in_fs: {path_in_fs}, path_in_zip: {path_in_zip}')
             zip_file.write(path_in_fs, path_in_zip)
     zip_file.close()
 
