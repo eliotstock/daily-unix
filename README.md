@@ -38,7 +38,7 @@ host, first do this on the development host:
 1. Follow the PyOxidizer [Getting Started](https://pyoxidizer.readthedocs.io/en/stable/getting_started.html#)
 1. `cd py`
 1. `pyoxidizer build`
-1. `cp ./build/x86_64-unknown-linux-gnu/debug/exe/pyoxidizer ./daily-unix-index`
+1. `cp ./build/x86_64-unknown-linux-gnu/debug/exe/pyoxidizer ../daily-unix-index`
 1. `git add ./daily-unix-index && git commit -m "New indexer PyOxidizer build." && git push origin master`
 
 Then on the minimal host, simply grab the `daily-unix-index` binary from https://github.com/eliotstock/daily-unix
