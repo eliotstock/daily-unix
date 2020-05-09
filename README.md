@@ -17,7 +17,9 @@ python ./index.py
 deactivate
 ```
 
-Then take a look at `./out` and `./py/content.zip`
+Then take a look at `./out` and `./py/content.zip`. If it's good, overwite the copy in the Android app:
+
+`cp ./py/content.zip ./android/app/src/main/res/raw/content.zip`
 
 The problem with this script alone is that it requires a development machine to run, ie. one with
 Python 3, git, etc. It's nice to be able to run this on a machine with only a minimal Ubuntu
