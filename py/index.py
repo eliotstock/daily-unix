@@ -16,20 +16,32 @@ _LOG = logging.getLogger(__name__)
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 # Directories that contain binaries. On Ubuntu 20.04, /bin and /sbin are just
-# symlinks to the same dirs under /usr.
+# symlinks to the same dirs under /usr. To check manually whether this host
+# has a bunch of stuff in both dirs:
+#   comm -12 <(ls -1 /usr/bin) <(ls -1 /usr/sbin)
 _BIN_DIRS = ['/usr/bin', '/usr/sbin']
 
+_TLDR_DIR = './tldr'
+
 _OUT_DIR = '../out'
+
+class CsvCoverageRow:
+    """Struct-like data for a row in the coverage.csv that we produce."""
+    bin: str
+    whatIs: bool
+    tldr: bool
+    package: bool
+    man: bool
 
 def main() -> int:
     """Script entry point."""
 
     _LOG.info(f'Checking for required tools')
 
-    if not os.path.exists('../../tldr'):
-        _LOG.error('Clone https://github.com/tldr-pages/tldr.git into'
-                + ' directory tldr alongside this repo')
-        exit
+    if not os.path.exists(_TLDR_DIR):
+        _LOG.error('Please run:\ngit clone https://github.com/tldr-pages/tldr.git'
+                + f' {_TLDR_DIR}')
+        return 1
 
     # input('Hit Ctrl-C now to stop re-run.')
 
@@ -42,8 +54,8 @@ def main() -> int:
     os.makedirs(_OUT_DIR)
 
     coverage_csv_out = open(f'{_OUT_DIR}/coverage.csv', 'w')
-    coverage_csv_out.write('command,whatis,package,man,tldr\n')
-    coverage_csv_row = ''
+    coverage_csv_out.write('command,whatis,tldr,package,man\n')
+    coverage_csv_row = CsvCoverageRow()
 
     total_man_pages = 0
     total_tldr_pages = 0
@@ -69,9 +81,38 @@ def main() -> int:
                 # what we need and can skip it this time.
                 continue
 
-            coverage_csv_row += f'{b},'
+            coverage_csv_row = CsvCoverageRow()
+            coverage_csv_row.bin = b
+
+            # Try looking for the tldr page first under common, and only if
+            # that fails under linux.
+            coverage_csv_row.tldr = False
+
+            try:
+                shutil.copy(f'{_TLDR_DIR}/pages/common/{b}.md',
+                        f'{_OUT_DIR}/{b}/tldr.md')
+                dir_tldr_pages += 1
+                total_tldr_pages += 1
+                coverage_csv_row.tldr = True
+            except Exception:
+                try:
+                    shutil.copy(f'{_TLDR_DIR}/pages/linux/{b}.md',
+                            f'{_OUT_DIR}/{b}/tldr.md')
+                    dir_tldr_pages += 1
+                    total_tldr_pages += 1
+                    coverage_csv_row.tldr = True
+                except Exception:
+                    _LOG.debug(f'  No tldr page: {d}/{b}')
+
+                    # For now, to reduce scope for the user, only cover commands that
+                    # have a TLDR. While this is truly "daily" unix commands, having
+                    # 1,800 commands to get through will take the user 5 years.
+                    os.rmdir(f'{_OUT_DIR}/{b}')
+                    continue
 
             # Produce whatis strings.
+            coverage_csv_row.whatIs = False
+
             try:
                 whatis = subprocess.check_output(['whatis', b],
                         stderr=subprocess.DEVNULL).strip().decode()
@@ -89,11 +130,13 @@ def main() -> int:
                 if whatis:
                     whatis_out.write(whatis)
                     whatis_out.close()
-                    coverage_csv_row += 'y,'
+                    coverage_csv_row.whatIs = True
             except Exception:
-                coverage_csv_row += ','
+                pass
 
             # Note the owning package of the binary.
+            coverage_csv_row.package = False
+
             try:
                 package = subprocess.check_output(['dpkg', '-S', b],
                     stderr=subprocess.DEVNULL).strip().decode()
@@ -105,44 +148,35 @@ def main() -> int:
                 if package:
                     package_out.write(package)
                     package_out.close()
-                    coverage_csv_row += 'y,'
+                    coverage_csv_row.package = True
             except Exception:
-                coverage_csv_row += ','
+                pass
 
             # Produce man pages
+            coverage_csv_row.man = False
+
             man_out = open(f'{_OUT_DIR}/{b}/man.txt', 'w')
             man_process = subprocess.Popen(['man', b], stdout=man_out,
                     stderr=subprocess.PIPE)
             error = man_process.stderr.read()
-            coverage_csv_row += 'y,'
             if error:
                 _LOG.debug(error.decode().strip())
+            else:
+                coverage_csv_row.man = True
 
             dir_man_pages += 1
             total_man_pages += 1
 
-            # Try looking for the tldr page first under common, and only if
-            # that fails under linux.
-            try:
-                shutil.copy(f'../../tldr/pages/common/{b}.md',
-                        f'{_OUT_DIR}/{b}/tldr.md')
-                dir_tldr_pages += 1
-                total_tldr_pages += 1
-                coverage_csv_row += 'y\n'
-            except Exception:
-                try:
-                    shutil.copy(f'../../tldr/pages/linux/{b}.md',
-                            f'{_OUT_DIR}/{b}/tldr.md')
-                    dir_tldr_pages += 1
-                    total_tldr_pages += 1
-                except Exception:
-                    _LOG.debug(f'  No tldr page: {d}/{b}')
-                coverage_csv_row += '\n'
+            # Write out CSV row to the file.
+            coverage_csv_out.write(f'{coverage_csv_row.bin},{coverage_csv_row.whatIs},'
+                    + f'{coverage_csv_row.tldr},{coverage_csv_row.package},'
+                    + f'{coverage_csv_row.man}\n')
+
+        # Done with this binary directory.
         _LOG.info(f'  {dir_man_pages} man pages')
         _LOG.info(f'  {dir_tldr_pages} tldr pages')
 
-        coverage_csv_out.write(coverage_csv_row)
-
+    # Done with all binary directories.
     _LOG.info(f'Total: {total_man_pages} man pages')
     _LOG.info(f'Total: {total_tldr_pages} tldr pages')
 
@@ -158,6 +192,8 @@ def main() -> int:
             # _LOG.info(f'path_in_fs: {path_in_fs}, path_in_zip: {path_in_zip}')
             zip_file.write(path_in_fs, path_in_zip)
     zip_file.close()
+
+    return 0
 
 if __name__ == '__main__':
     sys.exit(main())
