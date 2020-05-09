@@ -8,16 +8,6 @@ The app has the content zipped up into its `res/raw` directory. See `android`.
 
 ## Scripts to generate the content zip from a unix host
 
-### Node version (unmaintained)
-
-Use node v8.11.3 or later.
-
-`npm install`
-
-`npm run build`
-
-`npm run run`
-
 ### Python version (current)
 
 ```
@@ -43,3 +33,13 @@ host, first do this on the development host:
 
 Then on the minimal host, simply grab the `daily-unix-index` binary from https://github.com/eliotstock/daily-unix
 using a browser and run it. The output still needs to be pushed up to Github, however.
+
+### Node version (unmaintained)
+
+Use node v8.11.3 or later.
+
+```
+npm install
+npm run build
+npm run run
+```
