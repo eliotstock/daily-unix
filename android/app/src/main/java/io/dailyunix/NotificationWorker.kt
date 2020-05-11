@@ -24,12 +24,12 @@ fun reschedule(appContext: Context) {
     val dueDate = Calendar.getInstance()
     val currentDate = Calendar.getInstance()
 
-    // Execute at around 08:45.
-    dueDate.set(Calendar.HOUR_OF_DAY, 8)
+    // Execute at around 06:45.
+    dueDate.set(Calendar.HOUR_OF_DAY, 6)
     dueDate.set(Calendar.MINUTE, 45)
     dueDate.set(Calendar.SECOND, 0)
 
-    // If it's now after 08:45, we mean 08:45 tomorrow.
+    // If it's now after 06:45, we mean 06:45 tomorrow.
     if (dueDate.before(currentDate)) {
         dueDate.add(Calendar.HOUR_OF_DAY, 24)
     }
@@ -44,7 +44,7 @@ fun reschedule(appContext: Context) {
         .addTag(NotificationWorker::class.java.name)
         .build()
 
-    // We want to replace the existing scheduled request if there is one.
+    // Replace the existing scheduled request if there is one.
     WorkManager.getInstance(appContext).cancelAllWorkByTag(NotificationWorker::class.java.name)
 
     WorkManager.getInstance(appContext).enqueue(dailyWorkRequest)

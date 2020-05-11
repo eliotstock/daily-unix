@@ -88,9 +88,9 @@ class Model {
     fun completionMessage(context: Context): String {
         val commandsNotYetCompleted = getCommandNames(context, completedCommands)
         val totalCommands = completedCommands.size + commandsNotYetCompleted.size
-        val percent: Float = completedCommands.size.toFloat() / totalCommands.toFloat()
+        val percent: Float = (completedCommands.size.toFloat() / totalCommands.toFloat()) * 100
 
-        val m = "Completed ${completedCommands.size} of ${totalCommands} (%${percent.toInt()})"
+        val m = "Completed ${completedCommands.size} of ${totalCommands} (${percent.toInt()}%)"
 
         Log.i(tag, m)
 
