@@ -28,9 +28,9 @@ _OUT_DIR = '../out'
 class CsvCoverageRow:
     """Struct-like data for a row in the coverage.csv that we produce."""
     bin: str
-    whatIs: bool
+    whatIs: str
     tldr: bool
-    package: bool
+    package: str
     man: bool
 
 def main() -> int:
@@ -70,7 +70,7 @@ def main() -> int:
 
         for b in bins:
             if len(b) == 0:
-                pass
+                continue
 
             b = b.strip().decode()
 
@@ -104,14 +104,15 @@ def main() -> int:
                 except Exception:
                     _LOG.debug(f'  No tldr page: {d}/{b}')
 
-                    # For now, to reduce scope for the user, only cover commands that
-                    # have a TLDR. While this is truly "daily" unix commands, having
-                    # 1,800 commands to get through will take the user 5 years.
-                    os.rmdir(f'{_OUT_DIR}/{b}')
+                    # For now, to reduce scope for the user, only cover
+                    # commands that have a TLDR. While this is truly *daily*
+                    # unix commands, having 1,800 commands to get through
+                    # will take the user 5 years.
+                    shutil.rmtree(f'{_OUT_DIR}/{b}')
                     continue
 
             # Produce whatis strings.
-            coverage_csv_row.whatIs = False
+            coverage_csv_row.whatIs = ''
 
             try:
                 whatis = subprocess.check_output(['whatis', b],
@@ -130,27 +131,42 @@ def main() -> int:
                 if whatis:
                     whatis_out.write(whatis)
                     whatis_out.close()
-                    coverage_csv_row.whatIs = True
+                    coverage_csv_row.whatIs = whatis
             except Exception:
                 pass
 
             # Note the owning package of the binary.
-            coverage_csv_row.package = False
+            coverage_csv_row.package = ''
 
             try:
-                package = subprocess.check_output(['dpkg', '-S', b],
-                    stderr=subprocess.DEVNULL).strip().decode()
+                package_process = subprocess.Popen(['dpkg', '-S', f'{d}/{b}'],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE)
+                package_stdout = package_process.stdout.read()
+                package_stderr = package_process.stderr.read()
 
                 # Take just the first word of the first line, before ":".
-                package = package.split(':')[0]
+                package = package_stdout.strip().decode().split(':')[0]
+
+                if package_stderr:
+                    if 'no path found matching pattern' in package_stderr.decode():
+                        # Let's use the empty string as a valid value for
+                        # package, meaning this binary isn't installed as part
+                        # of a package on this Linux distro.
+                        package = ''
+                    else:
+                        _LOG.warning(package_stderr.decode().strip())
+                        shutil.rmtree(f'{_OUT_DIR}/{b}')
+                        continue
 
                 package_out = open(f'{_OUT_DIR}/{b}/package.txt', 'w')
                 if package:
                     package_out.write(package)
                     package_out.close()
-                    coverage_csv_row.package = True
+                    coverage_csv_row.package = package
             except Exception:
-                pass
+                shutil.rmtree(f'{_OUT_DIR}/{b}')
+                continue
 
             # Produce man pages
             coverage_csv_row.man = False
@@ -158,9 +174,9 @@ def main() -> int:
             man_out = open(f'{_OUT_DIR}/{b}/man.txt', 'w')
             man_process = subprocess.Popen(['man', b], stdout=man_out,
                     stderr=subprocess.PIPE)
-            error = man_process.stderr.read()
-            if error:
-                _LOG.debug(error.decode().strip())
+            man_error = man_process.stderr.read()
+            if man_error:
+                _LOG.warning(man_error.decode().strip())
             else:
                 coverage_csv_row.man = True
 
@@ -171,6 +187,8 @@ def main() -> int:
             coverage_csv_out.write(f'{coverage_csv_row.bin},{coverage_csv_row.whatIs},'
                     + f'{coverage_csv_row.tldr},{coverage_csv_row.package},'
                     + f'{coverage_csv_row.man}\n')
+
+            _LOG.info(f'  {d}/{b} ({coverage_csv_row.package}): {coverage_csv_row.whatIs}')
 
         # Done with this binary directory.
         _LOG.info(f'  {dir_man_pages} man pages')
