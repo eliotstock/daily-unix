@@ -8,6 +8,8 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import kotlin.random.Random
 import com.google.gson.Gson
+import java.util.*
+import kotlin.collections.ArrayList
 
 private val tag = Model::class.java.name
 
@@ -15,11 +17,12 @@ private const val modelFileName = "model.json"
 private const val contentDirName = "content"
 
 class Model {
+
     var versionCode: Int = 0
     var commandOftheDay: Command? = null
     private var commandOfTheDayIndex: Int = 0
 
-    var completedCommands: MutableSet<String> = HashSet()
+    var completedCommands: MutableSet<String> = TreeSet()
 
     // For debug purposes only. Remove when stable.
     var notificationHistory: MutableList<String> = ArrayList()
@@ -49,40 +52,47 @@ class Model {
         Log.d(tag, "Picking $randomCommandName, command $commandOfTheDayIndex of " +
                 "${commandsNotYetCompleted.size}")
 
-        commandOftheDay = Command(randomCommandName, null, null, null,
-                null)
+        commandOftheDay = commandByName(randomCommandName, context)
+    }
 
-        val commandDir = File(contentDir(context), commandOftheDay!!.name)
+    fun commandByName(name: String, context: Context): Command {
+        val c = Command(name, null, null, null, null)
+
+        val commandDir = File(contentDir(context), c.name)
 
         // The whatis, package and the man file are all expected to be there, but let's handle any
         // that are missing anyway.
         try {
-            commandOftheDay!!.whatIs = File(commandDir, "whatis.txt").readText()
+            c.whatIs = File(commandDir, "whatis.txt").readText()
         }
         catch (e: FileNotFoundException) {
-            Log.w(tag, "${commandOftheDay!!.name} has no whatis file")
+            Log.w(tag, "${c.name} has no whatis file")
         }
 
         try {
-            commandOftheDay!!.providerPackage = File(commandDir, "package.txt").readText()
+            // This file will be present but empty for any commands that are not installed as part
+            // of a package.
+            c.providerPackage = File(commandDir, "package.txt").readText()
         }
         catch (e: FileNotFoundException) {
-            Log.w(tag, "${commandOftheDay!!.name} has no package file")
+            Log.w(tag, "${c.name} has no package file")
         }
 
         try {
-            commandOftheDay!!.tldr = File(commandDir, "tldr.md").readText()
+            c.tldr = File(commandDir, "tldr.md").readText()
         }
         catch (e: FileNotFoundException) {
-            Log.d(tag, "${commandOftheDay!!.name} has no tldr file")
+            Log.d(tag, "${c.name} has no tldr file")
         }
 
         try {
-            commandOftheDay!!.man = File(commandDir, "man.txt").readText()
+            c.man = File(commandDir, "man.txt").readText()
         }
         catch (e: FileNotFoundException) {
-            Log.d(tag, "${commandOftheDay!!.name} has no man file")
+            Log.d(tag, "${c.name} has no man file")
         }
+
+        return c
     }
 
     fun completionMessage(context: Context): String {

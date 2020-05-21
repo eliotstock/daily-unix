@@ -6,9 +6,19 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
+    // 30: Android 11.0, R
+    // 29: Android 10.0, Q
+    // 28: Android 9.0,  P
+    // 27: Android 8.1,  O_MR1
+    // 26: Android 8.0,  O
+    // 25: Android 7.1,  N_MR1
+    // 24: Android 7.0,  N
+    // 23: Android 6.0,  M
+    // 22: Android 5.1,  L_MR1
+    // 21: Android 5.0,  L
     defaultConfig {
         applicationId "io.dailyunix"
-        minSdkVersion 29
+        minSdkVersion 28
         targetSdkVersion 29
         versionCode 5
         versionName "5.0"
@@ -43,6 +53,12 @@ dependencies {
     implementation "androidx.concurrent:concurrent-futures:1.0.0"
     implementation "androidx.concurrent:concurrent-futures-ktx:1.1.0-alpha01"
 
+    // Android X recycler view for lists
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
     // GSON
     implementation 'com.google.code.gson:gson:2.8.5'
+
+    // A Markdown processor
+    implementation "io.noties.markwon:core:4.3.1"
 }

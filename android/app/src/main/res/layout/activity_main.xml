@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".CommandActivity">
 
     <TextView
         android:id="@+id/commandName"
@@ -31,7 +31,7 @@
             <TextView
                 android:id="@+id/whatis"
                 style="@style/textView"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:text="whatis"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -39,7 +39,7 @@
             <TextView
                 android:id="@+id/providerPackage"
                 style="@style/textView"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:text="package"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -47,7 +47,6 @@
             <TextView
                 android:id="@+id/tldr"
                 style="@style/textView"
-                android:fontFamily="monospace"
                 android:textSize="14sp"
                 android:text="tldr"
                 app:layout_constraintLeft_toLeftOf="parent"

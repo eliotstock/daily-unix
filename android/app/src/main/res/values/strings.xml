@@ -4,5 +4,6 @@
     <string name="tldr">tldr</string>
     <string name="man">man</string>
     <string name="provided">Provided by package: %s</string>
+    <string name="not_provided">Not provided by a package</string>
     <string name="next">Next</string>
 </resources>

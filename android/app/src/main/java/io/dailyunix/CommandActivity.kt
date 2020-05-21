@@ -1,16 +1,22 @@
 package io.dailyunix
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ScrollView
+import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+object Constants {
+    const val INTENT_EXTRA_COMMAND = "command"
+}
 
-    private val tag = MainActivity::class.java.name
+class CommandActivity : AppCompatActivity() {
+
+    private val tag = CommandActivity::class.java.name
 
     private var model: Model? = null
 
@@ -24,13 +30,23 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         model = getModel(applicationContext)
-        command = model?.commandOftheDay
     }
 
     override fun onStart() {
         super.onStart()
 
         Log.v(tag, "onStart()")
+
+        if (intent.hasExtra(Constants.INTENT_EXTRA_COMMAND)) {
+            val commandName = intent.getStringExtra(Constants.INTENT_EXTRA_COMMAND)
+
+            Log.v(tag, "command: $commandName")
+
+            command = model?.commandByName(commandName!!, applicationContext)
+        }
+        else {
+            command = model?.commandOftheDay
+        }
 
         showCommand()
 
@@ -48,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private fun showCommand() {
         // Now is NOT the time to advance to the next random command to show. The notification
         // worker already did that before showing the notification.
@@ -62,18 +79,25 @@ class MainActivity : AppCompatActivity() {
             whatis.visibility = View.GONE
         }
 
+        // Not all commands are provided by a package. When they're not, say so.
         if (command?.providerPackage.isNullOrBlank()) {
-            providerPackage.visibility = View.GONE
+            providerPackage.text = getString(R.string.not_provided)
+
         } else {
             providerPackage.text = getString(R.string.provided, command?.providerPackage)
-            providerPackage.visibility = View.VISIBLE
         }
 
         if (command?.tldr.isNullOrBlank()) {
             tldr.visibility = View.GONE
         } else {
-            tldr.text = command?.tldr
-            tldr.visibility = View.VISIBLE
+            // TODO (P1): Remove the heading before rendering the markdown. We already show the
+            //  command name above.
+            val tldrWithoutHeading = command?.tldr!!.replace(Regex("^#.*"), "")
+
+            // Markwon is a markdown renderer that doesn't need a WebView:
+            //   https://noties.io/Markwon/docs/v4/core/getting-started.html
+            val markwon = Markwon.create(applicationContext)
+            markwon.setMarkdown(tldr, tldrWithoutHeading)
         }
 
         if (command?.man.isNullOrBlank()) {

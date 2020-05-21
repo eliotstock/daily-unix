@@ -24,6 +24,7 @@ class DailyUnixApplication : Application() {
 
             reschedule(applicationContext)
 
+            model.nextCommand(applicationContext)
             model.save(applicationContext)
         }
     }
