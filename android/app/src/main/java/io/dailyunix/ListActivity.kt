@@ -5,11 +5,11 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class ListActivity : Activity() {
+abstract class ListActivity : Activity() {
 
     private val tag = ListActivity::class.java.name
 
-    private var model: Model? = null
+    var model: Model? = null
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
@@ -20,12 +20,12 @@ class ListActivity : Activity() {
         setContentView(R.layout.activity_list)
 
         model = getModel(applicationContext)
-        val sortedCommands : List<String> = model!!.completedCommands.sorted()
+        val sortedCommands : List<String> = getCommandsForList()
 
         viewManager = LinearLayoutManager(this)
         viewAdapter = ListAdapter(sortedCommands)
 
-        recyclerView = findViewById<RecyclerView>(R.id.my_recycler_view).apply {
+        recyclerView = findViewById<RecyclerView>(R.id.recycler_view_for_activity).apply {
             // Improve performance: changes in content do not change the layout size of the
             // RecyclerView.
             setHasFixedSize(true)
@@ -35,4 +35,7 @@ class ListActivity : Activity() {
             adapter = viewAdapter
         }
     }
+
+    abstract fun getCommandsForList(): List<String>
+
 }

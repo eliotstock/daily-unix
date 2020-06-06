@@ -41,18 +41,22 @@ class Model {
     // the app before commandOftheDay is populated. extractContent() needs to have been called
     // beforehand.
     fun nextCommand(context: Context) {
-        val commandsNotYetCompleted = getCommandNames(context, completedCommands)
+        val remainingCommands = remainingCommands(context)
 
         // nextInt() is *exclusive* of the second parameter, ie. it will never return it. This is
         // good because the size of an array is one higher than the index of the last element.
-        commandOfTheDayIndex = Random.nextInt(0, commandsNotYetCompleted.size)
+        commandOfTheDayIndex = Random.nextInt(0, remainingCommands.size)
 
-        val randomCommandName = commandsNotYetCompleted[commandOfTheDayIndex]
+        val randomCommandName = remainingCommands[commandOfTheDayIndex]
 
         Log.d(tag, "Picking $randomCommandName, command $commandOfTheDayIndex of " +
-                "${commandsNotYetCompleted.size}")
+                "${remainingCommands.size}")
 
         commandOftheDay = commandByName(randomCommandName, context)
+    }
+
+    fun remainingCommands(context: Context): List<String> {
+        return getCommandNames(context, completedCommands)
     }
 
     fun commandByName(name: String, context: Context): Command {

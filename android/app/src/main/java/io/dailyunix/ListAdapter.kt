@@ -1,10 +1,10 @@
 package io.dailyunix
 
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 
 class ListAdapter(private val dataset: List<String>) :
@@ -22,11 +22,13 @@ class ListAdapter(private val dataset: List<String>) :
         textView.setOnClickListener() {
             v ->
                 val t = v as TextView
-                // Log.v(tag, "onClick: ${t.text}")
 
-                val intent = Intent(t.context, CommandActivity::class.java)
-                intent.putExtra(Constants.INTENT_EXTRA_COMMAND, t.text)
-                t.context.startActivity(intent)
+                val action = RemainingCommandsFragmentDirections
+                    .actionRemainingCommandsFragmentToCommandFragment(t.text.toString())
+
+                Log.v(tag, "Action: command fragment with command ${t.text}")
+
+                v.findNavController().navigate(action)
         }
 
         return CommandViewHolder(textView)

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/commandFragment">
+
+    <fragment
+        android:id="@+id/remainingCommandsFragment"
+        android:name="io.dailyunix.RemainingCommandsFragment"
+        android:label="fragment_remaining_commands"
+        tools:layout="@layout/fragment_list" >
+        <action
+            android:id="@+id/action_remainingCommandsFragment_to_commandFragment"
+            app:destination="@id/commandFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/commandFragment"
+        android:name="io.dailyunix.CommandFragment"
+        android:label="fragment_command"
+        tools:layout="@layout/fragment_command" >
+        <argument
+            android:name="command"
+            app:argType="string" />
+    </fragment>
+</navigation>

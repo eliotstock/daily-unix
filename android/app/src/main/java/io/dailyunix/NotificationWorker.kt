@@ -105,7 +105,7 @@ class NotificationWorker(appContext: Context, workerParams: WorkerParameters)
         // notification, otherwise the activity will show a different command to the notification.
         val command = model.commandOftheDay
 
-        val intent = Intent(applicationContext, CommandActivity::class.java)
+        val intent = Intent(applicationContext, MainActivity::class.java)
 
         if (command != null) {
             var text: String? = command.whatIs

@@ -1,22 +1,21 @@
 package io.dailyunix
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
+import android.view.*
 import android.widget.ScrollView
+import androidx.fragment.app.Fragment
 import io.noties.markwon.Markwon
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_command.*
 
 object Constants {
-    const val INTENT_EXTRA_COMMAND = "command"
+    const val ARGUMENT_COMMAND = "command"
 }
 
-class CommandActivity : AppCompatActivity() {
+class CommandFragment : Fragment() {
 
-    private val tag = CommandActivity::class.java.name
+    private val logTag = CommandFragment::class.java.name
 
     private var model: Model? = null
 
@@ -27,9 +26,15 @@ class CommandActivity : AppCompatActivity() {
 
         Log.v(tag, "onCreate()")
 
-        setContentView(R.layout.activity_main)
+        model = getModel(requireContext())
+    }
 
-        model = getModel(applicationContext)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_command, container, false)
     }
 
     override fun onStart() {
@@ -37,15 +42,15 @@ class CommandActivity : AppCompatActivity() {
 
         Log.v(tag, "onStart()")
 
-        if (intent.hasExtra(Constants.INTENT_EXTRA_COMMAND)) {
-            val commandName = intent.getStringExtra(Constants.INTENT_EXTRA_COMMAND)
+        if (requireArguments().isEmpty) {
+            command = model?.commandOftheDay
+        }
+        else {
+            val commandName = requireArguments().getString(Constants.ARGUMENT_COMMAND)
 
             Log.v(tag, "command: $commandName")
 
-            command = model?.commandByName(commandName!!, applicationContext)
-        }
-        else {
-            command = model?.commandOftheDay
+            command = model?.commandByName(commandName!!, requireContext())
         }
 
         showCommand()
@@ -55,10 +60,10 @@ class CommandActivity : AppCompatActivity() {
                 model?.completedCommands?.add(command!!.name)
             }
 
-            model?.nextCommand(applicationContext)
+            model?.nextCommand(requireContext())
             command = model?.commandOftheDay
 
-            model?.save(applicationContext)
+            model?.save(requireContext())
 
             showCommand()
         }
@@ -70,6 +75,11 @@ class CommandActivity : AppCompatActivity() {
         // worker already did that before showing the notification.
 
         commandName.text = command?.name
+
+        // TODO (P1): Remove once we have a hamburger icon in the top left.
+//        commandName.setOnClickListener() {
+//            drawerLayout.openDrawer(Gravity.LEFT)
+//        }
 
         // Remove any unpopulated TextView instances from the layout.
         if (command?.whatIs != null) {
@@ -96,7 +106,7 @@ class CommandActivity : AppCompatActivity() {
 
             // Markwon is a markdown renderer that doesn't need a WebView:
             //   https://noties.io/Markwon/docs/v4/core/getting-started.html
-            val markwon = Markwon.create(applicationContext)
+            val markwon = Markwon.create(requireContext())
             markwon.setMarkdown(tldr, tldrWithoutHeading)
         }
 
@@ -107,17 +117,11 @@ class CommandActivity : AppCompatActivity() {
             man.visibility = View.VISIBLE
         }
 
-        completion.text = model?.completionMessage(applicationContext)
+        completion.text = model?.completionMessage(requireContext())
 
         // TODO (P2): This doesn't always work. See:
         //   https://stackoverflow.com/questions/4119441/how-to-scroll-to-top-of-long-scrollview-layout/19677350
         scrollView.fullScroll(ScrollView.FOCUS_UP)
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-
-        Log.v(tag, "onNewIntent()")
     }
 
 }
