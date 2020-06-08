@@ -76,11 +76,6 @@ class CommandFragment : Fragment() {
 
         commandName.text = command?.name
 
-        // TODO (P1): Remove once we have a hamburger icon in the top left.
-//        commandName.setOnClickListener() {
-//            drawerLayout.openDrawer(Gravity.LEFT)
-//        }
-
         // Remove any unpopulated TextView instances from the layout.
         if (command?.whatIs != null) {
             whatis.text = command?.whatIs

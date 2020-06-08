@@ -1,15 +1,20 @@
 package io.dailyunix
 
-import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.widget.Toolbar
+import androidx.navigation.findNavController
+import androidx.navigation.ui.*
+import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() /*, NavigationView.OnNavigationItemSelectedListener */ {
+class MainActivity : AppCompatActivity() {
 
     private val logTag = MainActivity::class.java.name
+
+    private lateinit var appBarConfiguration : AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,25 +23,27 @@ class MainActivity : AppCompatActivity() /*, NavigationView.OnNavigationItemSele
 
         setContentView(R.layout.activity_main)
 
-        // TODO (P1): Remove once navigation working.
-        // navigation.setNavigationItemSelectedListener(this)
+//        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+//        setSupportActionBar(toolbar) // Causes: "This Activity already has an action bar supplied by the window decor"
+//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//        supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        val navController = findNavController(R.id.nav_host_fragment)
+
+        appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
+        // appBarConfiguration = AppBarConfiguration(setOf(), drawerLayout)
+
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navigation.setupWithNavController(navController)
     }
 
-    /*
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.completed -> {
-                val intent = Intent(this, CompletedCommandsActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.remaining -> {
-                val intent = Intent(this, RemainingCommandsActivity::class.java)
-                startActivity(intent)
-            }
-        }
-
-        return true
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return item.onNavDestinationSelected(findNavController(R.id.nav_host_fragment))
+                || super.onOptionsItemSelected(item)
     }
-    */
+
+    override fun onSupportNavigateUp(): Boolean {
+        return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration)
+    }
 
 }

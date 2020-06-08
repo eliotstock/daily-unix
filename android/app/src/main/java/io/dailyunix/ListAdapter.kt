@@ -23,6 +23,8 @@ class ListAdapter(private val dataset: List<String>) :
             v ->
                 val t = v as TextView
 
+                // TODO (P1): Subclass into CompletedCommandsListAdapter and
+                //  RemainingCommandsListAdapter and implement onCreateViewHolder() in each.
                 val action = RemainingCommandsFragmentDirections
                     .actionRemainingCommandsFragmentToCommandFragment(t.text.toString())
 

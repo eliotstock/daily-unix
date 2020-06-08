@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.dailyunix">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="io.dailyunix">
 
     <application
         android:name=".DailyUnixApplication"
@@ -15,12 +14,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- TODO (P1): Remove once we're committed to fragments. -->
-        <activity android:name=".CompletedCommandsActivity">
-        </activity>
-        <activity android:name=".RemainingCommandsActivity">
+            <nav-graph android:value="@navigation/nav_graph" />
         </activity>
     </application>
 

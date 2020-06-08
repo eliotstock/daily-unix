@@ -15,7 +15,6 @@ abstract class ListFragment : Fragment() {
 
     var model: Model? = null
 
-    // private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
 

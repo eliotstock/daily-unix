@@ -1,6 +1,6 @@
 package io.dailyunix
 
-class CompletedCommandsActivity : ListActivity() {
+class CompletedCommandsFragment : ListFragment() {
 
     override fun getCommandsForList(): List<String> {
         return model!!.completedCommands.sorted()

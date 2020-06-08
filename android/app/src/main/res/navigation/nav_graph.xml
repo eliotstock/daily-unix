@@ -6,9 +6,19 @@
     app:startDestination="@id/commandFragment">
 
     <fragment
+        android:id="@+id/completedCommandsFragment"
+        android:name="io.dailyunix.CompletedCommandsFragment"
+        android:label="Completed commands"
+        tools:layout="@layout/fragment_list" >
+        <action
+            android:id="@+id/action_completedCommandsFragment_to_commandFragment"
+            app:destination="@id/commandFragment" />
+    </fragment>
+
+    <fragment
         android:id="@+id/remainingCommandsFragment"
         android:name="io.dailyunix.RemainingCommandsFragment"
-        android:label="fragment_remaining_commands"
+        android:label="Remaining commands"
         tools:layout="@layout/fragment_list" >
         <action
             android:id="@+id/action_remainingCommandsFragment_to_commandFragment"
@@ -18,7 +28,7 @@
     <fragment
         android:id="@+id/commandFragment"
         android:name="io.dailyunix.CommandFragment"
-        android:label="fragment_command"
+        android:label="Command"
         tools:layout="@layout/fragment_command" >
         <argument
             android:name="command"
