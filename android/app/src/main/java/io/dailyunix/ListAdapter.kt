@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.navigation.ActionOnlyNavDirections
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 
@@ -23,10 +24,8 @@ class ListAdapter(private val dataset: List<String>) :
             v ->
                 val t = v as TextView
 
-                // TODO (P1): The action here shouldn't be from a specific destination, either
-                //  remaining or completed commands lists. It should be the same for both.
-                val action = RemainingCommandsFragmentDirections
-                    .actionRemainingCommandsFragmentToCommandFragment(t.text.toString())
+                val action = CommandFragmentDirections
+                        .actionGlobalCommandFragment(t.text.toString())
 
                 Log.v(tag, "Action: command fragment with command ${t.text}")
 
