@@ -19,12 +19,14 @@ import kotlinx.android.synthetic.main.activity_main.*
 // TODO (P2): Sharing
 // TODO (P2): Test completion doesn't break
 // TODO (P2): Counts of completed and remaining commands
-// TODO (P2): Play Store listing
+// TODO (P2): Play Store listing, including privacy policy URL
 // TODO (P2): Launcher icon, icon for notifications
 
 // TODO (P3): Target O and test on O, P, Q, R
 // TODO (P3): Completion celebration
 // TODO (P3): Search
+// TODO (P3): Firebase crash reporting
+// TODO (P3): Consider getting dailyunix.io and hosting on Firebase
 class MainActivity : AppCompatActivity() {
 
     private val logTag = MainActivity::class.java.name
