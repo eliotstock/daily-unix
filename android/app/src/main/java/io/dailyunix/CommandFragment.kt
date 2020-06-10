@@ -3,11 +3,15 @@ package io.dailyunix
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ScrollView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.fragment_command.*
+
 
 object Constants {
     const val ARGUMENT_COMMAND = "command"
@@ -74,7 +78,9 @@ class CommandFragment : Fragment() {
         // Now is NOT the time to advance to the next random command to show. The notification
         // worker already did that before showing the notification.
 
-        commandName.text = command?.name
+        // Set the title in the action bar/toolbar to the name of the command
+        // TODO (P3): Consider also formatting as monospace font.
+        (activity as AppCompatActivity?)!!.supportActionBar?.title = command?.name
 
         // Remove any unpopulated TextView instances from the layout.
         if (command?.whatIs != null) {

@@ -71,7 +71,7 @@ fun showNotification(appContext: Context, title: String, text: String, intent: I
         intent, 0)
 
     val builder = NotificationCompat.Builder(appContext, channelId)
-        .setSmallIcon(R.drawable.ic_launcher_foreground) // TODO (P2): Notification icon
+        // .setSmallIcon(R.drawable.ic_launcher_foreground) // TODO (P2): Notification icon
         .setContentTitle(title)
         .setContentText(text)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
