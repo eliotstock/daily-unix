@@ -7,6 +7,8 @@
     <string name="man">man</string>
     <string name="open">open</string>
     <string name="provided">Provided by package: %s</string>
+    <string name="no_man">No man page is available for this command</string>
+    <string name="no_tldr">No TLDR is available for this command</string>
     <string name="not_provided">Not provided by a package</string>
     <string name="next">Next</string>
     <string name="remaining">Remaining</string>
