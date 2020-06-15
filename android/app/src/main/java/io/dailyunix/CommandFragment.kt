@@ -60,7 +60,6 @@ class CommandFragment : Fragment() {
             Log.d(logTag, "Observing change to command: ${command.name}")
 
             // Set the title in the action bar/toolbar to the name of the command
-            // TODO (P3): Consider also formatting as monospace font.
             (activity as AppCompatActivity?)!!.supportActionBar?.title = command?.name
 
             // Not all commands are provided by a package. When they're not, say so.
@@ -82,13 +81,14 @@ class CommandFragment : Fragment() {
 
         var commandToShow: Command? = null
 
-        // The daily notification will pass us an argument for the command to show.
         if (requireArguments().isEmpty) {
-            // No argument means we just show the current command of the day.
+            // Start from launcher or tap on notification. Just show the current command of the
+            // day.
             commandToShow = model?.commandOftheDay
         }
         else {
-            // An argument means we show this command.
+            // Start from tap on the completed or remaining commands list in side nav. Show this
+            // command.
             val commandName = requireArguments().getString(Constants.ARGUMENT_COMMAND)
 
             Log.v(logTag, "command: $commandName")

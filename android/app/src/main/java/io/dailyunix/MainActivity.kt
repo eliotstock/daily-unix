@@ -10,9 +10,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.*
 import kotlinx.android.synthetic.main.activity_main.*
 
-// TODO (P1): Tabs for TLDR and MAN, with swipe support. See
-//  https://developer.android.com/guide/navigation/navigation-swipe-view-2?hl=en
-// TODO (P3): Fix layout issues, including extra toolbar or action bar
 // TODO (P1): Wrapping on man pages
 // TODO (P1): Move progress into header of side nav
 
