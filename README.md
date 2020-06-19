@@ -11,6 +11,7 @@ The app has the content zipped up into its `res/raw` directory. See `android`.
 ### Python version (current)
 
 ```
+cd py
 virtualenv -p /usr/bin/python3.7 venv
 source venv/bin/activate
 python ./index.py
@@ -31,10 +32,17 @@ host, first do this on the development host:
 1. `cd py`
 1. `pyoxidizer build`
 1. `cp ./build/x86_64-unknown-linux-gnu/debug/exe/pyoxidizer ../daily-unix-index`
+1. `cd ..`
 1. `git add ./daily-unix-index && git commit -m "New indexer PyOxidizer build." && git push origin master`
 
-Then on the minimal host, simply grab the `daily-unix-index` binary from https://github.com/eliotstock/daily-unix
-using a browser and run it. The output still needs to be pushed up to Github, however.
+Then on the minimal host:
+
+1. `sudo apt-get install groff` (we do need groff installed in order to generate HTML output of the man pages)
+1. Grab the `daily-unix-index` binary from https://github.com/eliotstock/daily-unix using a browser
+1. Grab the TLDR pages repo zip from https://github.com/tldr-pages/tldr using a browser and unzip them such that the `tldr` directory sits alongside the `daily-unix-index` binary
+1. `chmod a+x daily-unix-index`
+1. `.daily-unix-index/`
+1. Use drive.google.com from the browser to move the content.zip file over to the development host for committing.
 
 ### Node version (unmaintained)
 

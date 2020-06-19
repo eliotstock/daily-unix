@@ -171,12 +171,61 @@ def main() -> int:
             # Produce man pages
             coverage_csv_row.man = False
 
-            man_out = open(f'{_OUT_DIR}/{b}/man.txt', 'w')
-            man_process = subprocess.Popen(['man', b], stdout=man_out,
-                    stderr=subprocess.PIPE)
-            man_error = man_process.stderr.read()
-            if man_error:
-                _LOG.warning(man_error.decode().strip())
+            # As plain text, without justifying the text but with a default width. This
+            # introduces line breaks where we probably don't want them.
+            # man_out = open(f'{_OUT_DIR}/{b}/man.txt', 'w')
+            # man_process = subprocess.Popen(['man', '--no-justification', b], stdout=man_out,
+            #         stderr=subprocess.PIPE)
+            # man_error = man_process.stderr.read()
+            # if man_error:
+            #     _LOG.warning(man_error.decode().strip())
+            # else:
+            #     coverage_csv_row.man = True
+
+            # As Postscript files, which might render better in the Android app, but contain
+            # page breaks.
+            # man_out = open(f'{_OUT_DIR}/{b}/man.ps', 'w')
+            # man_process = subprocess.Popen(['man', '-t', b], stdout=man_out,
+            #         stderr=subprocess.PIPE)
+            # man_error = man_process.stderr.read()
+            # if man_error:
+            #     _LOG.warning(man_error.decode().strip())
+
+            # As HTML, which has no hard line breaks and is all in one page, but has the downside
+            # that there is stuff we don't want at the top like this:
+            # <body>
+            # <h1 align="center">cupsfilter</h1>
+            # <a href="#NAME">NAME</a><br>
+            # <a href="#SYNOPSIS">SYNOPSIS</a><br>
+            # <a href="#DESCRIPTION">DESCRIPTION</a><br>
+            # <a href="#OPTIONS">OPTIONS</a><br>
+            # <a href="#EXIT STATUS">EXIT STATUS</a><br>
+            # <a href="#ENVIRONMENT">ENVIRONMENT</a><br>
+            # <a href="#FILES">FILES</a><br>
+            # <a href="#NOTES">NOTES</a><br>
+            # <a href="#EXAMPLE">EXAMPLE</a><br>
+            # <a href="#SEE ALSO">SEE ALSO</a><br>
+            # <a href="#COPYRIGHT">COPYRIGHT</a><br>
+            # <hr>
+            # <h2>NAME
+            # <a name="NAME"></a>
+            # </h2>
+            # Note that we just assume everything's in man section 1, or if it's not it doesn't belong in the app.
+            # TODO (P1): Remove everything in the following tags: <h1>, <hr>, <a>.
+            man_out = open(f'{_OUT_DIR}/{b}/man.html', 'w')
+            gunzip = subprocess.Popen(['gunzip', '--to-stdout', f'/usr/share/man/man1/{b}.1.gz'],
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            groff = subprocess.Popen(['groff', '-mandoc', '-Thtml'],
+                    stdin=gunzip.stdout, stdout=man_out, stderr=subprocess.PIPE)
+            groff.wait()
+            gunzip_error = gunzip.stderr.read()
+            groff_error = groff.stderr.read()
+            if gunzip_error:
+                _LOG.warning(f'/usr/share/man/man1/{b}.1.gz:')
+                _LOG.warning(gunzip_error.decode().strip())
+            elif groff_error:
+                _LOG.warning(f'/usr/share/man/man1/{b}.1.gz:')
+                _LOG.warning(groff_error.decode().strip())
             else:
                 coverage_csv_row.man = True
 
