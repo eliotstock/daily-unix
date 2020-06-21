@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 // TODO (P2): Back to dark theme
 // TODO (P2): Circle graphic for progress
-// TODO (P2): Starred commands
+// TODO (P2): Starred/bookmarked commands
 // TODO (P2): Sharing
 // TODO (P2): Test completion doesn't break
 // TODO (P2): Counts of completed and remaining commands
@@ -24,9 +24,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 //  completion circle (dynamic?)
 // TODO (P2): Licenses fragment
 
-// TODO (P3): Target O and test on O, P, Q, R
-// TODO (P3): Completion celebration
-// TODO (P3): Search
+// TODO (P3): minSdkVersion to 26 (Android O), targetSdkVersion to 30 (Android R), test on O to R
+// TODO (P3): Completion celebration. Find something in Unix history, Unix version 1 manual.
+// TODO (P3): Search of command names
 // TODO (P3): Firebase crash reporting
 // TODO (P3): Consider getting dailyunix.io and hosting on Firebase
 class MainActivity : AppCompatActivity() {

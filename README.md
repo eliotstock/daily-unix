@@ -42,7 +42,7 @@ Then on the minimal host:
 1. Grab the TLDR pages repo zip from https://github.com/tldr-pages/tldr using a browser and unzip them such that the `tldr` directory sits alongside the `daily-unix-index` binary
 1. `chmod a+x daily-unix-index`
 1. `.daily-unix-index/`
-1. Use drive.google.com from the browser to move the content.zip file over to the development host for committing.
+1. Use drive.google.com from the browser to move the `content.zip` file over to the development host for committing. It should overwrite `./android/app/src/main/res/raw/content.zip`.
 
 ### Node version (unmaintained)
 

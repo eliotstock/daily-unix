@@ -1,6 +1,8 @@
 package io.dailyunix
 
 import android.os.Bundle
+import android.text.Html
+import android.text.Spanned
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -29,13 +31,15 @@ class ManFragment : Fragment() {
             if (command?.man.isNullOrBlank()) {
                 contentText.text = getString(R.string.no_man)
             } else {
-                contentText.text = command?.man
-                contentText.visibility = View.VISIBLE
+                val html: Spanned  = Html.fromHtml(command?.man, 0)
+                contentText.text = html
             }
 
             // TODO (P2): This doesn't always work. See:
             //  https://stackoverflow.com/questions/4119441/how-to-scroll-to-top-of-long-scrollview-layout/19677350
             scrollView.fullScroll(ScrollView.FOCUS_UP)
+
+            contentText.breakStrategy
         })
     }
 

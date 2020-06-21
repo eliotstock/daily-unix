@@ -90,7 +90,7 @@ class Model {
         }
 
         try {
-            c.man = File(commandDir, "man.txt").readText()
+            c.man = File(commandDir, "man.html").readText()
         }
         catch (e: FileNotFoundException) {
             Log.d(tag, "${c.name} has no man file")
@@ -195,7 +195,7 @@ fun extractContent(context: Context) {
 
         val fileOutputStream = FileOutputStream(file)
 
-        Log.i(tag, "$ze.name")
+        Log.i(tag, "$ze")
 
         zipInputStream.copyTo(fileOutputStream)
 

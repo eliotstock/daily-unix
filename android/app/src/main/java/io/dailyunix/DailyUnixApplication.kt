@@ -14,7 +14,7 @@ class DailyUnixApplication : Application() {
 
         val model: Model = getModel(applicationContext)
 
-        if (model.versionCode < BuildConfig.VERSION_CODE) {
+        if (model.versionCode == 0 || model.versionCode < BuildConfig.VERSION_CODE) {
             Log.v(tag, "First run on v${BuildConfig.VERSION_CODE}. Extracting content and" +
                     " (re)scheduling notification")
 

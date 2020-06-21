@@ -18,18 +18,17 @@ private val tag = NotificationWorker::class.java.name
 
 private const val channelId = "daily"
 
-// Package level function
 fun reschedule(appContext: Context) {
     // Thanks: https://medium.com/androiddevelopers/workmanager-periodicity-ff35185ff006
     val dueDate = Calendar.getInstance()
     val currentDate = Calendar.getInstance()
 
-    // Execute at around 06:45.
+    // Execute at around this time every day.
     dueDate.set(Calendar.HOUR_OF_DAY, 6)
-    dueDate.set(Calendar.MINUTE, 45)
+    dueDate.set(Calendar.MINUTE, 30)
     dueDate.set(Calendar.SECOND, 0)
 
-    // If it's now after 06:45, we mean 06:45 tomorrow.
+    // If it's now after that time, we mean that time tomorrow.
     if (dueDate.before(currentDate)) {
         dueDate.add(Calendar.HOUR_OF_DAY, 24)
     }
@@ -71,7 +70,7 @@ fun showNotification(appContext: Context, title: String, text: String, intent: I
         intent, 0)
 
     val builder = NotificationCompat.Builder(appContext, channelId)
-        // .setSmallIcon(R.drawable.ic_launcher_foreground) // TODO (P2): Notification icon
+        .setSmallIcon(android.R.drawable.ic_menu_info_details) // TODO (P2): Notification icon
         .setContentTitle(title)
         .setContentText(text)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -103,26 +102,18 @@ class NotificationWorker(appContext: Context, workerParams: WorkerParameters)
 
         // Make sure we don't call Model.nextCommand() again before the user taps on the
         // notification, otherwise the activity will show a different command to the notification.
+        // TODO (P1): Test what happens if we let a day pass and have two notifications. Do they
+        //  both go to the command shown on them?
         val command = model.commandOftheDay
 
         val intent = Intent(applicationContext, MainActivity::class.java)
 
         if (command != null) {
-            var text: String? = command.whatIs
+            // The indexing script should make sure that only commands with a whatis end up in the
+            // content zip.
+            val text: String = command.whatIs ?: "Tap for more info"
 
-            // For a command with no whatis string, use only the first line of the tldr.
-            if (text == null && command.tldr != null) {
-                text = command.tldr?.split("\n")?.get(0)
-            }
-            // And for a command without either, use the first line from the man page.
-            else if (command.man != null) {
-                text = command.man?.split("\n")?.get(0)
-            }
-            else {
-                text = "Tap for more info"
-            }
-
-            showNotification(applicationContext, command.name, text!!, intent)
+            showNotification(applicationContext, command.name, text, intent)
         }
 
         return CallbackToFutureAdapter.getFuture {

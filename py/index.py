@@ -172,7 +172,7 @@ def main() -> int:
             coverage_csv_row.man = False
 
             # As plain text, without justifying the text but with a default width. This
-            # introduces line breaks where we probably don't want them.
+            # introduces line breaks where we don't want them.
             # man_out = open(f'{_OUT_DIR}/{b}/man.txt', 'w')
             # man_process = subprocess.Popen(['man', '--no-justification', b], stdout=man_out,
             #         stderr=subprocess.PIPE)
@@ -182,8 +182,7 @@ def main() -> int:
             # else:
             #     coverage_csv_row.man = True
 
-            # As Postscript files, which might render better in the Android app, but contain
-            # page breaks.
+            # As Postscript files, which look quite nice in a PS reader, but contain page breaks.
             # man_out = open(f'{_OUT_DIR}/{b}/man.ps', 'w')
             # man_process = subprocess.Popen(['man', '-t', b], stdout=man_out,
             #         stderr=subprocess.PIPE)
@@ -193,6 +192,13 @@ def main() -> int:
 
             # As HTML, which has no hard line breaks and is all in one page, but has the downside
             # that there is stuff we don't want at the top like this:
+            # <style type="text/css">
+            # p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+            # pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+            # table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+            # h1      { text-align: center }
+            # </style>
+            # ...
             # <body>
             # <h1 align="center">cupsfilter</h1>
             # <a href="#NAME">NAME</a><br>
@@ -210,8 +216,9 @@ def main() -> int:
             # <h2>NAME
             # <a name="NAME"></a>
             # </h2>
-            # Note that we just assume everything's in man section 1, or if it's not it doesn't belong in the app.
-            # TODO (P1): Remove everything in the following tags: <h1>, <hr>, <a>.
+            # TODO (P1): Find out what section the command is in. Not everything of interest is in
+            # section 1.
+            # TODO (P1): Remove everything in the following tags: <style>, <h1>, <hr>, <a>.
             man_out = open(f'{_OUT_DIR}/{b}/man.html', 'w')
             gunzip = subprocess.Popen(['gunzip', '--to-stdout', f'/usr/share/man/man1/{b}.1.gz'],
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
