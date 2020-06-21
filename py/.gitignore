@@ -1,3 +1,6 @@
 venv
 content.zip
 build
+
+# groff will leave PNG files lying around from the HTML output of man pages.
+*.png

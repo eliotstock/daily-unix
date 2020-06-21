@@ -11,6 +11,11 @@ import sys
 import zipfile
 
 from os.path import basename
+
+# TODO (P1): Figure out how to get this into the PyOxidizer build
+# On the minimal host:
+# ModuleNotFoundError: No module named 'bs4'
+# SystemError
 from bs4 import BeautifulSoup
 
 _LOG = logging.getLogger(__name__)
