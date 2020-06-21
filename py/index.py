@@ -11,6 +11,7 @@ import sys
 import zipfile
 
 from os.path import basename
+from bs4 import BeautifulSoup
 
 _LOG = logging.getLogger(__name__)
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -218,7 +219,6 @@ def main() -> int:
             # </h2>
             # TODO (P1): Find out what section the command is in. Not everything of interest is in
             # section 1.
-            # TODO (P1): Remove everything in the following tags: <style>, <h1>, <hr>, <a>.
             man_out = open(f'{_OUT_DIR}/{b}/man.html', 'w')
             gunzip = subprocess.Popen(['gunzip', '--to-stdout', f'/usr/share/man/man1/{b}.1.gz'],
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -235,6 +235,29 @@ def main() -> int:
                 _LOG.warning(groff_error.decode().strip())
             else:
                 coverage_csv_row.man = True
+
+            # Remove everything in the following tags: <style>, <h1>, <hr>, <a>.
+            with open(f'{_OUT_DIR}/{b}/man.html', 'r') as html_file:
+                html = html_file.read()
+                soup = BeautifulSoup(html, 'html.parser')
+                try:
+                    soup.style.extract()
+                    soup.h1.extract()
+                    soup.hr.extract()
+
+                    links = soup.find_all('a')
+                    for link in links:
+                        link.extract()
+                except Exception:
+                    # This is likely to be just that the HTML generated doesn't have any A tags in
+                    # it. No problem.
+                    pass
+
+                # _LOG.info(f'Cleaned HTML: {str(soup)}')
+
+            with open(f'{_OUT_DIR}/{b}/man.html', 'w') as html_file:
+                html_file.write(str(soup))
+                html_file.close()
 
             dir_man_pages += 1
             total_man_pages += 1
