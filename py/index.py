@@ -16,6 +16,8 @@ from os.path import basename
 # On the minimal host:
 # ModuleNotFoundError: No module named 'bs4'
 # SystemError
+# Note that anything that requires a "pip install" to run on this host will also need to be added
+# to the pyoxidizer.bzl file.
 from bs4 import BeautifulSoup
 
 _LOG = logging.getLogger(__name__)
@@ -41,6 +43,9 @@ class CsvCoverageRow:
 
 def main() -> int:
     """Script entry point."""
+
+    # _LOG.info(f'sys.path: {sys.path}')
+    _LOG.info(f'__file__: {__file__}')
 
     _LOG.info(f'Checking for required tools')
 
