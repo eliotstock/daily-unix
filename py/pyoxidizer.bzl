@@ -18,7 +18,7 @@ def make_exe(dist):
         include_test=False,
     )
 
-    exe.add_in_memory_python_resources(dist.pip_install(["bs4"]))
+    exe.add_in_memory_python_resources(dist.pip_install(["-r", "requirements.txt"]))
 
     exe.add_python_resources(dist.read_package_root(
         path=".",

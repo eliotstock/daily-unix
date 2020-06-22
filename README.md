@@ -15,6 +15,7 @@ cd py
 virtualenv -p /usr/bin/python3.7 venv
 source venv/bin/activate
 pip install beautifulsoup4
+pip freeze > requirements.txt
 python ./index.py
 deactivate
 ```
@@ -32,6 +33,7 @@ host, first do this on the development host:
 1. Follow the PyOxidizer [Getting Started](https://pyoxidizer.readthedocs.io/en/stable/getting_started.html#)
 1. `cd py`
 1. `pyoxidizer build`
+1. If you get errors at this point about being unable to install `pkg-resources==0.0.0` or anything else with a version `0.0.0` on it, just remove that line from `requirements.txt` and rerun `pyoxidizer build`.
 1. `cp ./build/x86_64-unknown-linux-gnu/debug/exe/pyoxidizer ../daily-unix-index`
 1. `cd ..`
 1. `git add ./daily-unix-index && git commit -m "New indexer PyOxidizer build." && git push origin master`
