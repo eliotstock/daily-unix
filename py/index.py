@@ -258,8 +258,8 @@ def main() -> int:
                         link.extract()
 
                     breaks = soup.find_all('br')
-                    for b in breaks:
-                        b.extract()
+                    for br in breaks:
+                        br.extract()
                 except Exception:
                     # This is likely to be just that the HTML generated doesn't have any A tags in
                     # it. No problem.
