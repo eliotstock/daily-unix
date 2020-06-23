@@ -62,12 +62,11 @@ class CommandFragment : Fragment() {
             // Set the title in the action bar/toolbar to the name of the command
             (activity as AppCompatActivity?)!!.supportActionBar?.title = command?.name
 
-            // Not all commands are provided by a package. When they're not, say so.
-            if (command?.providerPackage.isNullOrBlank()) {
-                providerPackage.text = getString(R.string.not_provided)
-
-            } else {
-                providerPackage.text = getString(R.string.provided, command?.providerPackage)
+            // Not all commands are provided by a package. When they're not, just leave the
+            // subtitle off the action bar.
+            if (!command?.providerPackage.isNullOrBlank()) {
+                (activity as AppCompatActivity?)!!.supportActionBar?.subtitle =
+                    command?.providerPackage
             }
 
             completion.text = model?.completionMessage(requireContext())

@@ -30,8 +30,8 @@ class TldrFragment : Fragment() {
             if (command?.tldr.isNullOrBlank()) {
                 contentText.text = getString(R.string.no_tldr)
             } else {
-                // TODO (P1): Remove the heading before rendering the markdown. We already show the
-                //  command name above.
+                // Remove the heading before rendering the markdown. We already show the command
+                // name above.
                 val tldrWithoutHeading = command?.tldr!!.replace(Regex("^#.*"), "")
 
                 // Markwon is a markdown renderer that doesn't need a WebView:
@@ -40,8 +40,6 @@ class TldrFragment : Fragment() {
                 markwon.setMarkdown(contentText, tldrWithoutHeading)
             }
 
-            // TODO (P2): This doesn't always work. See:
-            //  https://stackoverflow.com/questions/4119441/how-to-scroll-to-top-of-long-scrollview-layout/19677350
             scrollView.fullScroll(ScrollView.FOCUS_UP)
         })
     }

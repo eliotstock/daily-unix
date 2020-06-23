@@ -102,7 +102,7 @@ class NotificationWorker(appContext: Context, workerParams: WorkerParameters)
 
         // Make sure we don't call Model.nextCommand() again before the user taps on the
         // notification, otherwise the activity will show a different command to the notification.
-        // TODO (P1): Test what happens if we let a day pass and have two notifications. Do they
+        // TODO (P2): Test what happens if we let a day pass and have two notifications. Do they
         //  both go to the command shown on them?
         val command = model.commandOftheDay
 

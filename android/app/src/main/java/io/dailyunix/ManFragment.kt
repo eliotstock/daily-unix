@@ -35,8 +35,6 @@ class ManFragment : Fragment() {
                 contentText.text = html
             }
 
-            // TODO (P2): This doesn't always work. See:
-            //  https://stackoverflow.com/questions/4119441/how-to-scroll-to-top-of-long-scrollview-layout/19677350
             scrollView.fullScroll(ScrollView.FOCUS_UP)
 
             contentText.breakStrategy

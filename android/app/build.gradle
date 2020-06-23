@@ -7,8 +7,8 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
-    // 30: Android 11.0, R
-    // 29: Android 10.0, Q
+    // 30: Android 11.0, R, required for targetSdkVersion by 2021-11
+    // 29: Android 10.0, Q, required for targetSdkVersion by 2020-11
     // 28: Android 9.0,  P
     // 27: Android 8.1,  O_MR1
     // 26: Android 8.0,  O
