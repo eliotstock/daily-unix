@@ -104,7 +104,7 @@ class Model {
         val totalCommands = completedCommands.size + commandsNotYetCompleted.size
         val percent: Float = (completedCommands.size.toFloat() / totalCommands.toFloat()) * 100
 
-        val m = "Completed ${completedCommands.size} of ${totalCommands} (${percent.toInt()}%)"
+        val m = "Completed ${completedCommands.size} of $totalCommands (${percent.toInt()}%)"
 
         Log.i(tag, m)
 
@@ -157,10 +157,12 @@ fun extractContent(context: Context) {
         Log.i(tag, "Deleting existing content and overwriting")
 
         try {
-            contentDir.delete()
+            if (!contentDir.deleteRecursively()) {
+                Log.e(tag, "Can't delete: $contentDir")
+            }
         }
         catch (e: Exception) {
-            Log.e(tag, e.message ?: "Can't delete: {contentDir}")
+            Log.e(tag, e.message ?: "Can't delete: $contentDir")
         }
     }
 
@@ -171,7 +173,7 @@ fun extractContent(context: Context) {
         contentDir.mkdir()
     }
     catch (e: Exception) {
-        Log.e(tag, e.message ?: "can't mkdir: {contentDir}")
+        Log.e(tag, e.message ?: "can't mkdir: $contentDir")
     }
 
     while (true)
@@ -190,7 +192,7 @@ fun extractContent(context: Context) {
             file.parentFile?.mkdir()
         }
         catch (e: Exception) {
-            Log.e(tag, e.message ?: "Can't mkdir: {file.parentFile}")
+            Log.e(tag, e.message ?: "Can't mkdir: ${file.parentFile}")
         }
 
         val fileOutputStream = FileOutputStream(file)

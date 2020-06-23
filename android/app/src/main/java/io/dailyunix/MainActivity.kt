@@ -11,11 +11,11 @@ import androidx.navigation.ui.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 // TODO (P1): Move progress into header of side nav
+// TODO (P1): whatis string in lists
 
-// TODO (P2): Back to dark theme
 // TODO (P2): Circle graphic for progress
 // TODO (P2): Starred/bookmarked commands
-// TODO (P2): Sharing
+// TODO (P2): Back to dark theme
 // TODO (P2): Test that completion of all commands doesn't break
 // TODO (P2): Counts of completed and remaining commands
 // TODO (P2): Play Store listing, including privacy policy URL
@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 // TODO (P3): Search of command names
 // TODO (P3): Firebase crash reporting
 // TODO (P3): Consider getting dailyunix.io and hosting on Firebase
+// TODO (P3): Sharing
 class MainActivity : AppCompatActivity() {
 
     private val logTag = MainActivity::class.java.name
