@@ -22,14 +22,6 @@
         app:layout_constraintTop_toBottomOf="@+id/tabLayout"
         app:layout_constraintBottom_toTopOf="@+id/button"/>
 
-    <TextView
-        android:id="@+id/completion"
-        style="@style/textView"
-        android:textSize="14sp"
-        android:text="completion"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button" />
-
     <Button
         android:id="@+id/button"
         style="@style/Widget.AppCompat.Button.Borderless"

@@ -64,12 +64,16 @@ class CommandFragment : Fragment() {
 
             // Not all commands are provided by a package. When they're not, just leave the
             // subtitle off the action bar.
-            if (!command?.providerPackage.isNullOrBlank()) {
-                (activity as AppCompatActivity?)!!.supportActionBar?.subtitle =
-                    command?.providerPackage
+            val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+            if (command?.providerPackage.isNullOrBlank()) {
+                actionBar?.subtitle = null
+            }
+            else {
+                actionBar?.subtitle = command?.providerPackage
             }
 
-            completion.text = model?.completionMessage(requireContext())
+            // TODO (P1): Move to custom view
+            //  completion.text = model?.completionMessage(requireContext())
         })
     }
 

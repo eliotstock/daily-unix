@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,7 +46,17 @@ abstract class ListFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        Log.v(tag, "onStart()")
+        Log.v(logTag, "onStart()")
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        Log.v(logTag, "onResume()")
+
+        // Remove the provider package that the last command we looked at added to the action bar.
+        val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+        actionBar?.subtitle = null
     }
 
     abstract fun getCommandsForList(): List<String>

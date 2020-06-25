@@ -3,14 +3,16 @@ package io.dailyunix
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
+import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
-// TODO (P1): Move progress into header of side nav
 // TODO (P1): whatis string in lists
 
 // TODO (P2): Circle graphic for progress
@@ -35,6 +37,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration : AppBarConfiguration
 
+    private var model: Model? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -52,6 +56,13 @@ class MainActivity : AppCompatActivity() {
         val viewModel: CommandViewModel by viewModels()
         viewModel.command.observe(this,  Observer<Command>{command ->
             Log.d(logTag, "Observing change to command: ${command.name}")
+
+            // TODO (P2): Move all this to a custom NavHeaderView that initially just includes a
+            //  TextView.
+            model = getModel(this)
+            val navHeaderView = navigation.getHeaderView(0)
+            val completion  = navHeaderView.findViewById<TextView>(R.id.completion)
+            completion.text = model?.completionMessage(this)
         })
     }
 
