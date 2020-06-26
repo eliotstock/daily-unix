@@ -28,6 +28,9 @@ _BIN_DIRS = ['/usr/bin', '/usr/sbin']
 
 _TLDR_DIR = './tldr'
 
+# TODO (P2): Consider pushing directories for each command down a level into ../out/content
+# to make it easier to zip up the content into ../out/content without writing to a file in the
+# same directory as we're zipping up.
 _OUT_DIR = '../out'
 
 class CsvCoverageRow:
@@ -224,24 +227,45 @@ def main() -> int:
             # <h2>NAME
             # <a name="NAME"></a>
             # </h2>
-            # TODO (P1): Find out what section the command is in. Not everything of interest is in
-            # section 1.
-            man_out = open(f'{_OUT_DIR}/{b}/man.html', 'w')
-            gunzip = subprocess.Popen(['gunzip', '--to-stdout', f'/usr/share/man/man1/{b}.1.gz'],
-                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            groff = subprocess.Popen(['groff', '-mandoc', '-Thtml'],
-                    stdin=gunzip.stdout, stdout=man_out, stderr=subprocess.PIPE)
-            groff.wait()
-            gunzip_error = gunzip.stderr.read()
-            groff_error = groff.stderr.read()
-            if gunzip_error:
-                _LOG.warning(f'/usr/share/man/man1/{b}.1.gz:')
-                _LOG.warning(gunzip_error.decode().strip())
-            elif groff_error:
-                _LOG.warning(f'/usr/share/man/man1/{b}.1.gz:')
-                _LOG.warning(groff_error.decode().strip())
-            else:
-                coverage_csv_row.man = True
+            # Look for the man page in any section of the host manual
+            #  Section 1: User command (executable programs or shell commands)
+            #  Section 2: System calls (functions provided by the kernel)
+            #  Section 3: Library calls (functions within program libraries)
+            #  Section 4: Special files (usually found in /dev)
+            #  Section 5: File formats and conventions eg /etc/passwd
+            #  Section 6: Games
+            #  Section 7: Miscellaneous (including macro packages and conventions)
+            #  Section 8: System administration commands (usually only for root)
+            #  Section 9: Kernel routines (Non standard)
+            #  Section 1SSL: Something I found on a particular unusual Debian-based distro
+            # Most commands in a minimal Ubuntu installation are in section 1 or 8, so try those
+            # first.
+            man_sections = ['1', '8', '2', '3', '4', '5', '6', '7', '9', '1SSL']
+
+            for section in man_sections:
+                man_out = open(f'{_OUT_DIR}/{b}/man.html', 'w')
+                gunzip = subprocess.Popen(['gunzip', '--to-stdout',
+                        f'/usr/share/man/man{section}/{b}.{section}.gz'], stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE)
+                groff = subprocess.Popen(['groff', '-mandoc', '-Thtml'],
+                        stdin=gunzip.stdout, stdout=man_out, stderr=subprocess.PIPE)
+                groff.wait()
+                gunzip_error = gunzip.stderr.read()
+                groff_error = groff.stderr.read()
+                if gunzip_error:
+                    if 'No such file or directory' in gunzip_error.decode():
+                        # _LOG.warning(f'Trying next section for: {b}, wasn\'t in section {section}')
+                        continue
+                    else:
+                        _LOG.warning(f'{b}: {gunzip_error.decode().strip()}')
+                        break
+                elif groff_error:
+                    _LOG.warning(f'{b}: {groff_error.decode().strip()}')
+                    break
+                else:
+                    # We found the man page in this section. Move on.
+                    coverage_csv_row.man = True
+                    break
 
             # Remove everything in the following tags: <title>, <style>, <h1>, <hr>, <a>, <br>.
             with open(f'{_OUT_DIR}/{b}/man.html', 'r') as html_file:

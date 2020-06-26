@@ -13,10 +13,16 @@ import androidx.navigation.ui.*
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
-// TODO (P1): whatis string in lists
-
-// TODO (P2): Circle graphic for progress
 // TODO (P2): Starred/bookmarked commands
+// TODO (P2): whatis string in lists
+//  * Have Model return Command instances rather than just strings for completedCommands property
+//    and remainingCommands() function
+//  * But persist only the command names to JSON, not the whole command instance serialisation
+//  * ListFragment and subclasses should deal with lists of Commands, not lists of Strings
+//  * ListAdapter constructor should take a list of Commands, not a list of Strings
+//  * ListAdapter.onBindViewHolder() should build formatted strings for the TextView with the
+//    command name as monospace and the whatis string as normal
+// TODO (P2): Circle graphic for progress
 // TODO (P2): Back to dark theme
 // TODO (P2): Test that completion of all commands doesn't break
 // TODO (P2): Counts of completed and remaining commands
