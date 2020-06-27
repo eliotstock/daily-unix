@@ -11,6 +11,7 @@ import androidx.concurrent.futures.CallbackToFutureAdapter
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.common.util.concurrent.ListenableFuture
+import io.dailyunix.Constants.ARGUMENT_COMMAND
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -67,7 +68,7 @@ fun createNotificationChannel(appContext: Context) {
 
 fun showNotification(appContext: Context, title: String, text: String, intent: Intent) {
     val pendingIntent: PendingIntent = PendingIntent.getActivity(appContext, 0,
-        intent, 0)
+        intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
     val builder = NotificationCompat.Builder(appContext, channelId)
         .setSmallIcon(android.R.drawable.ic_menu_info_details) // TODO (P2): Notification icon
@@ -103,10 +104,17 @@ class NotificationWorker(appContext: Context, workerParams: WorkerParameters)
         // Make sure we don't call Model.nextCommand() again before the user taps on the
         // notification, otherwise the activity will show a different command to the notification.
         // TODO (P2): Test what happens if we let a day pass and have two notifications. Do they
-        //  both go to the command shown on them?
+        //  both go to the command shown on them? Do we even get two notifications or does the
+        //  second replace the first?
         val command = model.commandOftheDay
 
         val intent = Intent(applicationContext, MainActivity::class.java)
+
+        // Keep in mind that the user could easily be advancing through commands in between this
+        // notification being presented and the user tapping on it. The command of the day might
+        // have moved on. Pass the command that's on this notification in the intent extras for
+        // the CommandFragment to pick up.
+        intent.putExtra(ARGUMENT_COMMAND, command?.name)
 
         if (command != null) {
             // The indexing script should make sure that only commands with a whatis end up in the

@@ -13,8 +13,23 @@ import androidx.navigation.ui.*
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
-// TODO (P2): Starred/bookmarked commands
-// TODO (P2): whatis string in lists
+// TODO (P2): Back to dark theme
+// TODO (P2): Bookmarked commands
+//  * Add list (or sorted set) of commands to Model for bookmarked commands
+//  * Add toggle button to action bar. onClick adds/removes command from bookmarked list on Model
+//  * Add BookmarkedCommandsFragment, new subclass of ListFragment
+//  * Add new fragment to nav_graph.xml
+// TODO (P2): Test that completion of all commands doesn't crash or break anything
+// TODO (P2): Launcher icon, icon for notifications. Ideas for iconography: brain, reference,
+//  completion circle (dynamic?), engine, piston
+// TODO (P2): Circle graphic for progress
+// TODO (P2): Play Store listing, including privacy policy URL
+// TODO (P3): Firebase crash reporting
+// TODO (P2): Licenses fragment
+
+// TODO (P3): minSdkVersion to 26 (Android O), targetSdkVersion to 30 (Android R), test on O to R
+// TODO (P3): Completion celebration. Find something in Unix history, Unix version 1 manual.
+// TODO (P3): whatis string in lists
 //  * Have Model return Command instances rather than just strings for completedCommands property
 //    and remainingCommands() function
 //  * But persist only the command names to JSON, not the whole command instance serialisation
@@ -22,19 +37,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 //  * ListAdapter constructor should take a list of Commands, not a list of Strings
 //  * ListAdapter.onBindViewHolder() should build formatted strings for the TextView with the
 //    command name as monospace and the whatis string as normal
-// TODO (P2): Circle graphic for progress
-// TODO (P2): Back to dark theme
-// TODO (P2): Test that completion of all commands doesn't break
-// TODO (P2): Counts of completed and remaining commands
-// TODO (P2): Play Store listing, including privacy policy URL
-// TODO (P2): Launcher icon, icon for notifications. Ideas for iconography: brain, reference,
-//  completion circle (dynamic?)
-// TODO (P2): Licenses fragment
-
-// TODO (P3): minSdkVersion to 26 (Android O), targetSdkVersion to 30 (Android R), test on O to R
-// TODO (P3): Completion celebration. Find something in Unix history, Unix version 1 manual.
 // TODO (P3): Search of command names
-// TODO (P3): Firebase crash reporting
 // TODO (P3): Consider getting dailyunix.io and hosting on Firebase
 // TODO (P3): Sharing
 class MainActivity : AppCompatActivity() {
@@ -58,6 +61,11 @@ class MainActivity : AppCompatActivity() {
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navigation.setupWithNavController(navController)
+
+        // TODO (P3): Why can't this be done declaratively in nav_graph.xml? See:
+        //  https://stackoverflow.com/questions/62608206/how-do-i-specify-icons-to-use-for-the-items-in-the-navigation-drawer
+        navigation.menu.getItem(0).icon = getDrawable(R.drawable.ic_completed)
+        navigation.menu.getItem(1).icon = getDrawable(R.drawable.ic_remaining)
 
         val viewModel: CommandViewModel by viewModels()
         viewModel.command.observe(this,  Observer<Command>{command ->

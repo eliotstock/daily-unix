@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayoutMediator
+import io.dailyunix.Constants.ARGUMENT_COMMAND
 import kotlinx.android.synthetic.main.fragment_command.*
 import java.lang.IllegalArgumentException
 
@@ -84,9 +85,15 @@ class CommandFragment : Fragment() {
 
         var commandToShow: Command? = null
 
-        if (requireArguments().isEmpty) {
-            // Start from launcher or tap on notification. Just show the current command of the
-            // day.
+        // Log.d(logTag, "Command extra: ${activity?.intent?.extras?.get("command")}")
+
+        if (activity?.intent?.hasExtra(ARGUMENT_COMMAND)!!) {
+            // Start from tap on the notification. Show the command shown on that notification.
+            commandToShow = model?.commandByName(
+                    activity?.intent?.getStringExtra(ARGUMENT_COMMAND)!!, requireContext())
+        }
+        else if (requireArguments().isEmpty) {
+            // Start from launcher. Just show the current command of the day.
             commandToShow = model?.commandOftheDay
         }
         else {

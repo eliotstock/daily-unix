@@ -21,8 +21,8 @@ android {
         applicationId "io.dailyunix"
         minSdkVersion 28
         targetSdkVersion 29
-        versionCode 21
-        versionName "0.1.21"
+        versionCode 28
+        versionName "0.1.28"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

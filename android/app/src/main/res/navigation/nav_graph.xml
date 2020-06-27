@@ -5,6 +5,9 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/commandFragment">
 
+    <!-- Note that specifying android:icon on each fragment doesn't work here. Do this
+         programmatically in the Activity instead. -->
+
     <fragment
         android:id="@+id/completedCommandsFragment"
         android:name="io.dailyunix.CompletedCommandsFragment"
