@@ -9,7 +9,9 @@
         <item name="android:background">@color/black</item>
         <item name="android:textColor">@color/lightGrey</item>
         -->
-        <item name="colorAccent">@color/primaryLightColor</item>
+        <item name="colorAccent">@color/primaryTextColor</item>
+        <item name="android:navigationBarColor">#00000000</item>
+
     </style>
 
     <style name="textView">

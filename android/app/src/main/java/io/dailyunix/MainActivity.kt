@@ -14,8 +14,6 @@ import androidx.navigation.ui.*
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
-// TODO (P2): Remove the small navigation bar at the bottom. See:
-//  https://stackoverflow.com/questions/62619020/how-do-i-extend-by-activitys-view-behind-the-navigation-bar-on-android-10-and-l
 // TODO (P2): Bookmarked commands
 //  * Add list (or sorted set) of commands to Model for bookmarked commands
 //  * Add toggle button to action bar. onClick adds/removes command from bookmarked list on Model

@@ -70,6 +70,8 @@ fun showNotification(appContext: Context, title: String, text: String, intent: I
     val pendingIntent: PendingIntent = PendingIntent.getActivity(appContext, 0,
         intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
+    // Note: do not add a large icon here. The Android notification developer guide says that these
+    // are "usually used only for contact photos; do not use it for your app icon".
     val builder = NotificationCompat.Builder(appContext, channelId)
         .setSmallIcon(android.R.drawable.ic_menu_info_details) // TODO (P2): Notification icon
         .setContentTitle(title)
