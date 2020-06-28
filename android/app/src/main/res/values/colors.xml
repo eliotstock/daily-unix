@@ -2,7 +2,7 @@
 <resources>
     <!-- To edit, use https://material.io/resources/color -->
     <color name="primaryColor">#1a237e</color>
-    <color name="primaryLightColor">#534bae</color>
+    <color name="primaryLightColor">#9fa8da</color>
     <color name="primaryDarkColor">#000051</color>
     <color name="primaryTextColor">#ffffff</color>
     <color name="black">#000</color>

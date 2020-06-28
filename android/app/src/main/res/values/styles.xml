@@ -1,14 +1,15 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <!-- See: https://developer.android.com/guide/topics/ui/look-and-feel/darktheme -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
         <!--
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
-        <item name="colorAccent">@color/primaryLightColor</item>
         <item name="android:background">@color/black</item>
         <item name="android:textColor">@color/lightGrey</item>
         -->
+        <item name="colorAccent">@color/primaryLightColor</item>
     </style>
 
     <style name="textView">

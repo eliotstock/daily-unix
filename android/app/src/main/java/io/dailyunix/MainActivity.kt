@@ -3,6 +3,7 @@ package io.dailyunix
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -13,21 +14,23 @@ import androidx.navigation.ui.*
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
-// TODO (P2): Back to dark theme
+// TODO (P2): Remove the small navigation bar at the bottom. See:
+//  https://stackoverflow.com/questions/62619020/how-do-i-extend-by-activitys-view-behind-the-navigation-bar-on-android-10-and-l
 // TODO (P2): Bookmarked commands
 //  * Add list (or sorted set) of commands to Model for bookmarked commands
 //  * Add toggle button to action bar. onClick adds/removes command from bookmarked list on Model
 //  * Add BookmarkedCommandsFragment, new subclass of ListFragment
 //  * Add new fragment to nav_graph.xml
-// TODO (P2): Test that completion of all commands doesn't crash or break anything
 // TODO (P2): Launcher icon, icon for notifications. Ideas for iconography: brain, reference,
-//  completion circle (dynamic?), engine, piston
+//  completion circle (dynamic?), engine, piston. Start with notification icon.
+// TODO (P2): Test that completion of all commands doesn't crash or break anything
 // TODO (P2): Circle graphic for progress
 // TODO (P2): Play Store listing, including privacy policy URL
 // TODO (P3): Firebase crash reporting
 // TODO (P2): Licenses fragment
 
 // TODO (P3): minSdkVersion to 26 (Android O), targetSdkVersion to 30 (Android R), test on O to R
+// TODO (P3): Test AutoBackup. Do I retain my completed list on the new phone?
 // TODO (P3): Completion celebration. Find something in Unix history, Unix version 1 manual.
 // TODO (P3): whatis string in lists
 //  * Have Model return Command instances rather than just strings for completedCommands property
@@ -38,8 +41,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 //  * ListAdapter.onBindViewHolder() should build formatted strings for the TextView with the
 //    command name as monospace and the whatis string as normal
 // TODO (P3): Search of command names
-// TODO (P3): Consider getting dailyunix.io and hosting on Firebase
-// TODO (P3): Sharing
+
+// TODO (P4): Consider getting dailyunix.io and hosting on Firebase
+// TODO (P4): Sharing
+// TODO (P4): Context bundles for minimal Ubuntu desktop, AWS server, Mac OS 11 with XCode
+// TODO (P4): User generated per-command rating for usefulness. Start with the most useful commands
 class MainActivity : AppCompatActivity() {
 
     private val logTag = MainActivity::class.java.name
@@ -54,6 +60,8 @@ class MainActivity : AppCompatActivity() {
         Log.v(logTag, "onCreate()")
 
         setContentView(R.layout.activity_main)
+
+        // drawerLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 
         val navController = findNavController(R.id.navHostFragment)
 
