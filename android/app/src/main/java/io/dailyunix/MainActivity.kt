@@ -59,8 +59,6 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        // drawerLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-
         val navController = findNavController(R.id.navHostFragment)
 
         appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)

@@ -24,6 +24,8 @@ class Model {
 
     var completedCommands: MutableSet<String> = TreeSet()
 
+    var bookmarkedCommands: MutableSet<String> = TreeSet()
+
     // For debug purposes only. Remove when stable.
     var notificationHistory: MutableList<String> = ArrayList()
 
