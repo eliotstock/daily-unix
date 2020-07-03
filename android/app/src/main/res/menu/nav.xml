@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- See comment in navigation/nav_graph.xml for keeping this in sync with that file. -->
+
+    <item android:id="@+id/bookmarkedCommandsFragment"
+        android:icon="@drawable/ic_bookmark_on"
+        android:title="@string/bookmarked"
+        app:showAsAction="ifRoom" />
     <item android:id="@+id/completedCommandsFragment"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@drawable/ic_completed"
         android:title="@string/completed"
         app:showAsAction="ifRoom" />
     <item android:id="@+id/remainingCommandsFragment"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@drawable/ic_remaining"
         android:title="@string/remaining"
         app:showAsAction="ifRoom" />
 </menu>

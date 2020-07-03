@@ -15,10 +15,7 @@ import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
 // TODO (P2): Bookmarked commands
-//  * Add list (or sorted set) of commands to Model for bookmarked commands
 //  * Add toggle button to action bar. onClick adds/removes command from bookmarked list on Model
-//  * Add BookmarkedCommandsFragment, new subclass of ListFragment
-//  * Add new fragment to nav_graph.xml
 // TODO (P2): Launcher icon, icon for notifications. Ideas for iconography: brain, reference,
 //  completion circle (dynamic?), engine, piston. Start with notification icon.
 // TODO (P2): Test that completion of all commands doesn't crash or break anything
@@ -26,6 +23,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 // TODO (P2): Play Store listing, including privacy policy URL
 // TODO (P3): Firebase crash reporting
 // TODO (P2): Licenses fragment
+// TODO (P2): When a list is empty, show "No commands" rather than an empty view.
 
 // TODO (P3): minSdkVersion to 26 (Android O), targetSdkVersion to 30 (Android R), test on O to R
 // TODO (P3): Test AutoBackup. Do I retain my completed list on the new phone?
@@ -66,10 +64,8 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navigation.setupWithNavController(navController)
 
-        // TODO (P3): Why can't this be done declaratively in nav_graph.xml? See:
-        //  https://stackoverflow.com/questions/62608206/how-do-i-specify-icons-to-use-for-the-items-in-the-navigation-drawer
-        navigation.menu.getItem(0).icon = getDrawable(R.drawable.ic_completed)
-        navigation.menu.getItem(1).icon = getDrawable(R.drawable.ic_remaining)
+        // TODO (P2): Use actionBar reference to add a bookmark toggle? Wait for response to:
+        //  https://stackoverflow.com/questions/62693646/how-do-i-modify-the-toolbar-actionbar-when-using-the-navigation-component-with-a
 
         val viewModel: CommandViewModel by viewModels()
         viewModel.command.observe(this,  Observer<Command>{command ->

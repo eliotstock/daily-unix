@@ -5,20 +5,28 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/commandFragment">
 
-    <!-- Note that specifying android:icon on each fragment doesn't work here. Do this
-         programmatically in the Activity instead. -->
+    <!-- Note that the nav menu items are NOT generated at runtime from these fragments. If adding
+    something here, it also needs to be added to menu/nav.xml and the ID of the fragment here must
+    match the ID of the item there. -->
+
+    <fragment
+        android:id="@+id/bookmarkedCommandsFragment"
+        android:name="io.dailyunix.BookmarkedCommandsFragment"
+        android:label="Bookmarked"
+        tools:layout="@layout/fragment_list" >
+    </fragment>
 
     <fragment
         android:id="@+id/completedCommandsFragment"
         android:name="io.dailyunix.CompletedCommandsFragment"
-        android:label="Completed commands"
+        android:label="Completed"
         tools:layout="@layout/fragment_list" >
     </fragment>
 
     <fragment
         android:id="@+id/remainingCommandsFragment"
         android:name="io.dailyunix.RemainingCommandsFragment"
-        android:label="Remaining commands"
+        android:label="Remaining"
         tools:layout="@layout/fragment_list" >
     </fragment>
 
