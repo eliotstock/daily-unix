@@ -112,6 +112,15 @@ class Model {
 
         return m
     }
+
+    fun toggleBookmark(command: String) {
+        if (bookmarkedCommands.contains(command)) {
+            bookmarkedCommands.remove(command)
+        }
+        else {
+            bookmarkedCommands.add(command)
+        }
+    }
 }
 
 fun getModel(context: Context): Model {

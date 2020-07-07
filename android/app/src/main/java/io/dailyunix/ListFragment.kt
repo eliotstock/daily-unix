@@ -22,6 +22,9 @@ abstract class ListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // We only want the options menu shown for commands, not lists.
+        setHasOptionsMenu(false)
+
         model = getModel(requireContext())
         val sortedCommands : List<String> = getCommandsForList()
 

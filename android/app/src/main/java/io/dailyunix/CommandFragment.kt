@@ -2,9 +2,7 @@ package io.dailyunix
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -30,6 +28,9 @@ class CommandFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         Log.v(logTag, "onCreate()")
+
+        // We want the options menu shown for commands.
+        setHasOptionsMenu(true)
 
         model = getModel(requireContext())
     }
@@ -72,9 +73,6 @@ class CommandFragment : Fragment() {
             else {
                 actionBar?.subtitle = command?.providerPackage
             }
-
-            // TODO (P1): Move to custom view
-            //  completion.text = model?.completionMessage(requireContext())
         })
     }
 
@@ -123,6 +121,11 @@ class CommandFragment : Fragment() {
             // Update the UI with the new command.
             viewModel.command.value = model?.commandOftheDay
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.action_bar, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
 }

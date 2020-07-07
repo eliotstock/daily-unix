@@ -2,20 +2,17 @@ package io.dailyunix
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
-import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
-// TODO (P2): Bookmarked commands
-//  * Add toggle button to action bar. onClick adds/removes command from bookmarked list on Model
+// TODO (P2): Bookmark icon toggles state (on/off icon swap)
 // TODO (P2): Launcher icon, icon for notifications. Ideas for iconography: brain, reference,
 //  completion circle (dynamic?), engine, piston. Start with notification icon.
 // TODO (P2): Test that completion of all commands doesn't crash or break anything
@@ -61,11 +58,10 @@ class MainActivity : AppCompatActivity() {
 
         appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
 
+        setSupportActionBar(toolbar)
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navigation.setupWithNavController(navController)
-
-        // TODO (P2): Use actionBar reference to add a bookmark toggle? Wait for response to:
-        //  https://stackoverflow.com/questions/62693646/how-do-i-modify-the-toolbar-actionbar-when-using-the-navigation-component-with-a
 
         val viewModel: CommandViewModel by viewModels()
         viewModel.command.observe(this,  Observer<Command>{command ->
@@ -80,9 +76,22 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    // Docs: "Return false to allow normal menu processing to proceed, true to consume it here."
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return item.onNavDestinationSelected(findNavController(R.id.navHostFragment))
-                || super.onOptionsItemSelected(item)
+        if ("bookmark".equals(item.title?.toString(), ignoreCase = true)) {
+            val viewModel: CommandViewModel by viewModels()
+
+            Log.i(logTag, "Toggling bookmark for command: ${viewModel.command.value?.name}")
+
+            model?.toggleBookmark(viewModel.command.value?.name!!)
+            model?.save(this)
+
+            return true
+        }
+        else {
+            return item.onNavDestinationSelected(findNavController(R.id.navHostFragment))
+                    || super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

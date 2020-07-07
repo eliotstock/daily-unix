@@ -7,13 +7,13 @@
     <item android:id="@+id/bookmarkedCommandsFragment"
         android:icon="@drawable/ic_bookmark_on"
         android:title="@string/bookmarked"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item android:id="@+id/completedCommandsFragment"
         android:icon="@drawable/ic_completed"
         android:title="@string/completed"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item android:id="@+id/remainingCommandsFragment"
         android:icon="@drawable/ic_remaining"
         android:title="@string/remaining"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 </menu>
