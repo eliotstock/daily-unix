@@ -83,8 +83,15 @@ class MainActivity : AppCompatActivity() {
 
             Log.i(logTag, "Toggling bookmark for command: ${viewModel.command.value?.name}")
 
-            model?.toggleBookmark(viewModel.command.value?.name!!)
-            model?.save(this)
+            val commandName = viewModel.command.value?.name
+
+            if (commandName.isNullOrEmpty()) {
+                Log.e(logTag, "No command name to bookmark/unbookmark")
+            }
+            else {
+                model?.toggleBookmark(viewModel.command.value?.name!!)
+                model?.save(this)
+            }
 
             return true
         }
