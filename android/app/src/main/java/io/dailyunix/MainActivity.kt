@@ -13,8 +13,7 @@ import androidx.navigation.ui.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 // TODO (P2): Bookmark icon toggles state (on/off icon swap)
-// TODO (P2): Launcher icon, icon for notifications. Ideas for iconography: brain, reference,
-//  completion circle (dynamic?), engine, piston. Start with notification icon.
+// TODO (P2): Icon for notifications, based on launcher icon
 // TODO (P2): Test that completion of all commands doesn't crash or break anything
 // TODO (P2): Circle graphic for progress
 // TODO (P2): Play Store listing, including privacy policy URL
@@ -23,7 +22,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 // TODO (P2): When a list is empty, show "No commands" rather than an empty view.
 
 // TODO (P3): minSdkVersion to 26 (Android O), targetSdkVersion to 30 (Android R), test on O to R
-// TODO (P3): Test AutoBackup. Do I retain my completed list on the new phone?
+// TODO (P3): Put content in nobackup and test Auto Backup again.
 // TODO (P3): Completion celebration. Find something in Unix history, Unix version 1 manual.
 // TODO (P3): whatis string in lists
 //  * Have Model return Command instances rather than just strings for completedCommands property

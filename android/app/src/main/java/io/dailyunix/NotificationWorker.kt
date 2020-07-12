@@ -73,7 +73,7 @@ fun showNotification(appContext: Context, title: String, text: String, intent: I
     // Note: do not add a large icon here. The Android notification developer guide says that these
     // are "usually used only for contact photos; do not use it for your app icon".
     val builder = NotificationCompat.Builder(appContext, channelId)
-        .setSmallIcon(android.R.drawable.ic_menu_info_details) // TODO (P2): Notification icon
+        .setSmallIcon(R.drawable.ic_launcher_foreground)
         .setContentTitle(title)
         .setContentText(text)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
