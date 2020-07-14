@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.invalidateOptionsMenu
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -20,9 +22,9 @@ class CommandFragment : Fragment() {
 
     private val logTag = CommandFragment::class.java.name
 
-    private var model: Model? = null
-
     private val viewModel: CommandViewModel by activityViewModels()
+
+    private var model: Model? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +75,10 @@ class CommandFragment : Fragment() {
             else {
                 actionBar?.subtitle = command?.providerPackage
             }
+
+            // Cause onPrepareOptionsMenu() to be called, so that the bookmark menu item might
+            // toggle.
+            requireActivity().invalidateOptionsMenu()
         })
     }
 
@@ -126,6 +132,28 @@ class CommandFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.action_bar, menu)
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    // Swap out the bookmark icon in the options menu depending on whether this command is
+    // bookmarked or not.
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+
+        val bookmarkMenuItem = menu.getItem(0)
+        val commandName = viewModel.command.value?.name
+
+        if (model?.bookmarkedCommands?.contains(commandName)!!) {
+            Log.v(logTag, "${commandName} is bookmarked")
+
+            bookmarkMenuItem?.icon = ContextCompat.getDrawable(requireContext(),
+                R.drawable.ic_bookmark_on)
+        }
+        else {
+            Log.v(logTag, "${commandName} is not bookmarked")
+
+            bookmarkMenuItem?.icon = ContextCompat.getDrawable(requireContext(),
+                R.drawable.ic_bookmark_off)
+        }
     }
 
 }

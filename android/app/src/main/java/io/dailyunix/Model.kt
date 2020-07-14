@@ -11,7 +11,7 @@ import com.google.gson.Gson
 import java.util.*
 import kotlin.collections.ArrayList
 
-private val tag = Model::class.java.name
+private val logTag = Model::class.java.name
 
 private const val modelFileName = "model.json"
 private const val contentDirName = "content"
@@ -34,7 +34,7 @@ class Model {
 
         val json = Gson().toJson(this)
 
-        Log.d(tag, "Model: $json")
+        Log.d(logTag, "Model: $json")
 
         modelFile(context).writeText(json)
     }
@@ -51,7 +51,7 @@ class Model {
 
         val randomCommandName = remainingCommands[commandOfTheDayIndex]
 
-        Log.d(tag, "Picking $randomCommandName, command $commandOfTheDayIndex of " +
+        Log.d(logTag, "Picking $randomCommandName, command $commandOfTheDayIndex of " +
                 "${remainingCommands.size}")
 
         commandOftheDay = commandByName(randomCommandName, context)
@@ -72,7 +72,7 @@ class Model {
             c.whatIs = File(commandDir, "whatis.txt").readText()
         }
         catch (e: FileNotFoundException) {
-            Log.w(tag, "${c.name} has no whatis file")
+            Log.w(logTag, "${c.name} has no whatis file")
         }
 
         try {
@@ -81,21 +81,21 @@ class Model {
             c.providerPackage = File(commandDir, "package.txt").readText()
         }
         catch (e: FileNotFoundException) {
-            Log.w(tag, "${c.name} has no package file")
+            Log.w(logTag, "${c.name} has no package file")
         }
 
         try {
             c.tldr = File(commandDir, "tldr.md").readText()
         }
         catch (e: FileNotFoundException) {
-            Log.d(tag, "${c.name} has no tldr file")
+            Log.d(logTag, "${c.name} has no tldr file")
         }
 
         try {
             c.man = File(commandDir, "man.html").readText()
         }
         catch (e: FileNotFoundException) {
-            Log.d(tag, "${c.name} has no man file")
+            Log.d(logTag, "${c.name} has no man file")
         }
 
         return c
@@ -108,7 +108,7 @@ class Model {
 
         val m = "Completed ${completedCommands.size} of $totalCommands (${percent.toInt()}%)"
 
-        Log.i(tag, m)
+        Log.i(logTag, m)
 
         return m
     }
@@ -116,9 +116,13 @@ class Model {
     fun toggleBookmark(command: String) {
         if (bookmarkedCommands.contains(command)) {
             bookmarkedCommands.remove(command)
+
+            Log.v(logTag, "$command is now unbookmarked")
         }
         else {
             bookmarkedCommands.add(command)
+
+            Log.v(logTag, "$command is now bookmarked")
         }
     }
 }
@@ -138,7 +142,7 @@ private fun modelFile(context: Context): File {
 
     if (!modelFile.exists()) {
         val success = modelFile.createNewFile()
-        Log.d(tag, "Created $modelFileName: $success")
+        Log.d(logTag, "Created $modelFileName: $success")
     }
 
     return modelFile
@@ -165,26 +169,26 @@ fun extractContent(context: Context) {
     val contentDir = contentDir(context)
 
     if (contentDir.exists()) {
-        Log.i(tag, "Deleting existing content and overwriting")
+        Log.i(logTag, "Deleting existing content and overwriting")
 
         try {
             if (!contentDir.deleteRecursively()) {
-                Log.e(tag, "Can't delete: $contentDir")
+                Log.e(logTag, "Can't delete: $contentDir")
             }
         }
         catch (e: Exception) {
-            Log.e(tag, e.message ?: "Can't delete: $contentDir")
+            Log.e(logTag, e.message ?: "Can't delete: $contentDir")
         }
     }
 
-    Log.i(tag, "Writing content to app data:")
+    Log.i(logTag, "Writing content to app data:")
 
     // Create the content directory in app data if it doesn't exist already.
     try {
         contentDir.mkdir()
     }
     catch (e: Exception) {
-        Log.e(tag, e.message ?: "can't mkdir: $contentDir")
+        Log.e(logTag, e.message ?: "can't mkdir: $contentDir")
     }
 
     while (true)
@@ -203,12 +207,12 @@ fun extractContent(context: Context) {
             file.parentFile?.mkdir()
         }
         catch (e: Exception) {
-            Log.e(tag, e.message ?: "Can't mkdir: ${file.parentFile}")
+            Log.e(logTag, e.message ?: "Can't mkdir: ${file.parentFile}")
         }
 
         val fileOutputStream = FileOutputStream(file)
 
-        Log.i(tag, "$ze")
+        Log.i(logTag, "$ze")
 
         zipInputStream.copyTo(fileOutputStream)
 

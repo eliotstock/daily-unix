@@ -11,7 +11,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.*
 import kotlinx.android.synthetic.main.activity_main.*
 
-// TODO (P2): Bookmark icon toggles state (on/off icon swap)
+// TODO (P2): Bookmark button testing
+// TODO (P2): Bookmark icon uses dark mode
 // TODO (P2): Test that completion of all commands doesn't crash or break anything
 // TODO (P2): Licenses fragment
 // TODO (P2): Circle custom view for progress
@@ -78,8 +79,6 @@ class MainActivity : AppCompatActivity() {
         if ("bookmark".equals(item.title?.toString(), ignoreCase = true)) {
             val viewModel: CommandViewModel by viewModels()
 
-            Log.i(logTag, "Toggling bookmark for command: ${viewModel.command.value?.name}")
-
             val commandName = viewModel.command.value?.name
 
             if (commandName.isNullOrEmpty()) {
@@ -89,6 +88,10 @@ class MainActivity : AppCompatActivity() {
                 model?.toggleBookmark(viewModel.command.value?.name!!)
                 model?.save(this)
             }
+
+            // Cause onPrepareOptionsMenu() to be called, so that the bookmark menu item might
+            // toggle.
+            invalidateOptionsMenu()
 
             return true
         }
