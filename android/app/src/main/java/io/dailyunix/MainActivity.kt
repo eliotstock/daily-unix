@@ -2,7 +2,6 @@ package io.dailyunix
 
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -13,13 +12,12 @@ import androidx.navigation.ui.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 // TODO (P2): Bookmark icon toggles state (on/off icon swap)
-// TODO (P2): Icon for notifications, based on launcher icon
 // TODO (P2): Test that completion of all commands doesn't crash or break anything
-// TODO (P2): Circle graphic for progress
-// TODO (P2): Play Store listing, including privacy policy URL
-// TODO (P3): Firebase crash reporting
 // TODO (P2): Licenses fragment
-// TODO (P2): When a list is empty, show "No commands" rather than an empty view.
+// TODO (P2): Circle custom view for progress
+// TODO (P2): Play Store listing, including privacy policy URL
+// TODO (P2): Firebase crash reporting
+// TODO (P2): When a list is empty, show "No commands" rather than an empty view
 
 // TODO (P3): minSdkVersion to 26 (Android O), targetSdkVersion to 30 (Android R), test on O to R
 // TODO (P3): Put content in nobackup and test Auto Backup again.
@@ -36,7 +34,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 // TODO (P4): Consider getting dailyunix.io and hosting on Firebase
 // TODO (P4): Sharing
-// TODO (P4): Context bundles for minimal Ubuntu desktop, AWS server, Mac OS 11 with XCode
+// TODO (P4): Context bundles for minimal Ubuntu desktop, AWS server, Mac OS 11 without XCode
 // TODO (P4): User generated per-command rating for usefulness. Start with the most useful commands
 class MainActivity : AppCompatActivity() {
 
