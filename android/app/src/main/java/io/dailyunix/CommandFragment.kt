@@ -118,14 +118,21 @@ class CommandFragment : Fragment() {
                 model?.completedCommands?.add(viewModel.command.value!!.name)
             }
 
-            // Advance to the next command of the day.
-            model?.nextCommand(requireContext())
+            try {
+                // Advance to the next command of the day.
+                model?.nextCommand(requireContext())
 
-            // Save again.
-            model?.save(requireContext())
+                // Save again.
+                model?.save(requireContext())
 
-            // Update the UI with the new command.
-            viewModel.command.value = model?.commandOftheDay
+                // Update the UI with the new command.
+                viewModel.command.value = model?.commandOftheDay
+            }
+            catch (e: NoMoreCommandsException) {
+                Log.v(logTag, "No more commands.")
+
+                // TODO (P3): Show the completion celebration. Well done, user, you're done.
+            }
         }
     }
 

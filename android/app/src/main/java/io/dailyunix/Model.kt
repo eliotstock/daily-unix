@@ -16,6 +16,8 @@ private val logTag = Model::class.java.name
 private const val modelFileName = "model.json"
 private const val contentDirName = "content"
 
+class NoMoreCommandsException(): Exception()
+
 class Model {
 
     var versionCode: Int = 0
@@ -44,6 +46,11 @@ class Model {
     // beforehand.
     fun nextCommand(context: Context) {
         val remainingCommands = remainingCommands(context)
+
+        if (remainingCommands.isEmpty()) {
+            // Client code should catch this and show the completion celebration.
+            throw NoMoreCommandsException()
+        }
 
         // nextInt() is *exclusive* of the second parameter, ie. it will never return it. This is
         // good because the size of an array is one higher than the index of the last element.

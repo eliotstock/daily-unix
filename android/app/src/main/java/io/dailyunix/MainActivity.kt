@@ -13,7 +13,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 // TODO (P2): Bookmark button testing
 // TODO (P2): Bookmark icon uses dark mode
-// TODO (P2): Test that completion of all commands doesn't crash or break anything
 // TODO (P2): Licenses fragment
 // TODO (P2): Circle custom view for progress
 // TODO (P2): Play Store listing, including privacy policy URL
