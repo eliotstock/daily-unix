@@ -28,7 +28,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 # flawed in that it omits the shell's builtin commands. A novice Unix user won't appreciate the
 # different between a builtin and an executable. The various shells' builtins don't have their
 # own man pages; instead they're documented by the shell's manpage. Consider extracting this
-# content into a special content entry.
+# content into a special content entry, or including the manpage 'bash-builtins'.
 _BIN_DIRS = ['/usr/bin', '/usr/sbin']
 
 _TLDR_DIR = './tldr'
