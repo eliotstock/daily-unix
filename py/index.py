@@ -24,6 +24,11 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 # symlinks to the same dirs under /usr. To check manually whether this host
 # has a bunch of stuff in both dirs:
 #   comm -12 <(ls -1 /usr/bin) <(ls -1 /usr/sbin)
+# TODO (P2): Using the filesystem as the complete source of truth for commands on the host is
+# flawed in that it omits the shell's builtin commands. A novice Unix user won't appreciate the
+# different between a builtin and an executable. The various shells' builtins don't have their
+# own man pages; instead they're documented by the shell's manpage. Consider extracting this
+# content into a special content entry.
 _BIN_DIRS = ['/usr/bin', '/usr/sbin']
 
 _TLDR_DIR = './tldr'
