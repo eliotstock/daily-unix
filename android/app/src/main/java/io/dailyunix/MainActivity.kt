@@ -11,9 +11,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.*
 import kotlinx.android.synthetic.main.activity_main.*
 
-// TODO (P2): Bookmark button testing
-// TODO (P2): Bookmark icon uses dark mode
-// TODO (P2): Licenses fragment
+// TODO (P2): Licenses fragment.
+//   * Add licence name for each command's package's man page to the content.zip.
+//   * Get the set of licence names and put each license file into the content.zip.
+//   * Add a "Licenses" item to the side nav whcih goes to a list of all commands.
+//   * Each command on the list goes to the licence for that command's man page.
+//   * Explain the license for the TLDR content somewhere.
 // TODO (P2): Circle custom view for progress
 // TODO (P2): Play Store listing, including privacy policy URL
 // TODO (P2): Firebase crash reporting

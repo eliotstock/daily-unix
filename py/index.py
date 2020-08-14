@@ -26,7 +26,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 #   comm -12 <(ls -1 /usr/bin) <(ls -1 /usr/sbin)
 # TODO (P2): Using the filesystem as the complete source of truth for commands on the host is
 # flawed in that it omits the shell's builtin commands. A novice Unix user won't appreciate the
-# different between a builtin and an executable. The various shells' builtins don't have their
+# difference between a builtin and an executable. The various shells' builtins don't have their
 # own man pages; instead they're documented by the shell's manpage. Consider extracting this
 # content into a special content entry, or including the manpage 'bash-builtins'.
 _BIN_DIRS = ['/usr/bin', '/usr/sbin']
@@ -45,6 +45,7 @@ class CsvCoverageRow:
     tldr: bool
     package: str
     man: bool
+    license: str
 
 def main() -> int:
     """Script entry point."""
@@ -96,6 +97,8 @@ def main() -> int:
                 # If a binary exists in both /bin and /sbin, we already have
                 # what we need and can skip it this time.
                 continue
+
+            package = ''
 
             coverage_csv_row = CsvCoverageRow()
             coverage_csv_row.bin = b
@@ -182,6 +185,39 @@ def main() -> int:
                     coverage_csv_row.package = package
             except Exception:
                 shutil.rmtree(f'{_OUT_DIR}/{b}')
+                continue
+
+            # Note the first license in use by the package. Packages may use different licenses
+            # for different sets of source files, but we assume the man page is covered by the
+            # first licence listed.
+            coverage_csv_row.license = ''
+
+            try:
+                copyright_process = subprocess.Popen(['cat', f'/usr/share/doc/{package}/copyright'],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE)
+                copyright_stdout = copyright_process.stdout.read()
+                copyright_stderr = copyright_process.stderr.read()
+
+                # Iterate over lines in license_stdout looking for ones that start with:
+                # Files: 
+                # License:
+                # TODO(P1): Find the license that applies to the manpages in the package.
+                # * Some packages have only one license and therefore only one line starting with
+                #   "License: "
+                # * Some packages have many licenses but the manpage is covered by "Files: *" at
+                #   the top.
+                # * Some packages have many licenses and the one for the manpage is covered by
+                #   "Files: manpages/".
+                copyright_lines = copyright_stdout.decode().splitlines()
+
+                for l in copyright_lines:
+                    if l.startswith('Files: '):
+                        _LOG.warning(f'  {l}')
+                    elif l.startswith('License: '):
+                        _LOG.warning(f'  {l}')
+            except Exception:
+                _LOG.error(f'Can\'t find copyright file for package {package}')
                 continue
 
             # Produce man pages

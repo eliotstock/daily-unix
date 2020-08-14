@@ -12,7 +12,7 @@ The app has the content zipped up into its `res/raw` directory. See `android`.
 
 ```
 cd py
-virtualenv -p /usr/bin/python3.7 venv
+virtualenv -p /usr/bin/python3.8 venv
 source venv/bin/activate
 pip install beautifulsoup4
 pip freeze > requirements.txt
