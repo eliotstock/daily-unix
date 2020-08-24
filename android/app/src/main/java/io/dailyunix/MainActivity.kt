@@ -11,6 +11,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.*
 import kotlinx.android.synthetic.main.activity_main.*
 
+// TODO (P2): Use a git submodule for TLDR
 // TODO (P2): Licenses fragment.
 //   * Add licence name for each command's package's man page to the content.zip.
 //   * Get the set of licence names and put each license file into the content.zip.

@@ -31,7 +31,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 # content into a special content entry, or including the manpage 'bash-builtins'.
 _BIN_DIRS = ['/usr/bin', '/usr/sbin']
 
-_TLDR_DIR = './tldr'
+_TLDR_DIR = '../tldr'
 
 # TODO (P2): Consider pushing directories for each command down a level into ../out/content
 # to make it easier to zip up the content into ../out/content without writing to a file in the
